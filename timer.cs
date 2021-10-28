@@ -19,19 +19,13 @@ class Timer{
     }
     private static void OnTimedEvent(Object source, ElapsedEventArgs e){ // Main game clock event, temporary implementation to test console drawing
         Console.Clear();
-        //Console.WriteLine("timer");
         playboard.MoveTetrisBlock();
-        //Console.WriteLine("test0");
         playboard.DrawBoard();
-        //Console.WriteLine("test1");
         for(int i=23;i>=0;i--){
             for(int j=9;j>=0;j--){
                 Console.Write(playboard.drawboard[i,j]);
-                //Console.Write(j);
             }
             Console.Write("\n");
         }
-        //Console.WriteLine("test2");
-        aTimer.Enabled=false;
     }
 }
