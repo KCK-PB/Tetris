@@ -2,8 +2,8 @@
 {
     public class TetrisBlock
     {
-        private readonly string type;
-        private readonly Square[] _tetrisBlock = new Square[4];
+        private string type;
+        private Square[] _tetrisBlock = new Square[4];
 
         public Square[] GetPosition()
         {
@@ -28,10 +28,10 @@
                     break;
 
                 case "J-block":
-                    _tetrisBlock[0] = new Square(22, 2);
-                    _tetrisBlock[1] = new Square(21, 2);
-                    _tetrisBlock[2] = new Square(20, 1);
-                    _tetrisBlock[3] = new Square(20, 2);
+                    _tetrisBlock[0] = new Square(22, 5);
+                    _tetrisBlock[1] = new Square(21, 5);
+                    _tetrisBlock[2] = new Square(20, 4);
+                    _tetrisBlock[3] = new Square(20, 5);
                     break;
 
                 case "L-block":
@@ -68,12 +68,17 @@
                     _tetrisBlock[2] = new Square(20, 4);
                     _tetrisBlock[3] = new Square(20, 5);
                     break;
+                default:
+                    _tetrisBlock[0] = new Square(20, 1);
+                    _tetrisBlock[1] = new Square(20, 3);
+                    _tetrisBlock[2] = new Square(20, 6);
+                    _tetrisBlock[3] = new Square(20, 10);
+                    break;
             }
         }
 
         public void MoveTetrisBlock(string direction)
         {
-            var allowMovement = true;
             switch (direction)
             {
                 case "left":

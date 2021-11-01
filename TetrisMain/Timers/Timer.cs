@@ -6,11 +6,11 @@
     
     public class Timer
     {
-        private static System.Timers.Timer aTimer; //XD?
+        private static System.Timers.Timer aTimer; 
         private static TetrisPlayboard playboard = TetrisPlayboard.GetInstance();
         public Timer()
         {
-            aTimer=new System.Timers.Timer(1000);
+            aTimer=new System.Timers.Timer(333);
             aTimer.Elapsed+=OnTimedEvent;
             aTimer.AutoReset=true;
             aTimer.Enabled=true;
@@ -30,12 +30,13 @@
             Console.Clear();
             playboard.MoveTetrisBlock();
             playboard.DrawBoard();
-            for(int i=23;i>=0;i--){
-                for(int j=9;j>=0;j--){
-                    //Console.Write(playboard.DrawBoard[i,j]); //Fajnie sie tam bawisz ziomek XD
+            for(int i=19;i>=0;i--){
+                for(int j=0;j<10;j++){
+                    Console.Write(playboard._drawboard[i,j]); 
                 }
                 Console.Write("\n");
             }
+            Console.Out.Flush();
         }
     }
 }
