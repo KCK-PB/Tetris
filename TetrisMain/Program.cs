@@ -10,16 +10,20 @@ namespace TetrisMain
         static void Main(string[] args)
         {
             bool showMenu = true;
+            Timer gameClock = new Timer();
+            while (true)
+            {
 
+            }
             SoundPlayer player = new SoundPlayer
             {
-                SoundLocation = "C:\\Users\\HP\\Downloads\\Simple Melody.wav"
+                SoundLocation = "Simple Melody.wav"
             };
             player.Play();
             while (showMenu)
             {
                 //DrawBorder();
-                showMenu = MainMenu();
+                //showMenu = MainMenu();
             }
         }
         private static bool MainMenu()
