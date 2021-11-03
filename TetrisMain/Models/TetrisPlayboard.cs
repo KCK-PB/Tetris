@@ -84,10 +84,10 @@
                     return (IsOccupied(tempPosition[0].GetPos().Item1-1, tempPosition[0].GetPos().Item2)|| IsOccupied(tempPosition[1].GetPos().Item1-1, tempPosition[1].GetPos().Item2)|| IsOccupied(tempPosition[2].GetPos().Item1-1, tempPosition[2].GetPos().Item2)|| IsOccupied(tempPosition[3].GetPos().Item1-1, tempPosition[3].GetPos().Item2));
 
                 case "left":
-                    return (IsOccupied(tempPosition[0].GetPos().Item1 - 1, tempPosition[0].GetPos().Item2-1) || IsOccupied(tempPosition[1].GetPos().Item1 - 1, tempPosition[1].GetPos().Item2-1) || IsOccupied(tempPosition[2].GetPos().Item1 - 1, tempPosition[2].GetPos().Item2-1) || IsOccupied(tempPosition[3].GetPos().Item1 - 1, tempPosition[3].GetPos().Item2-1));
+                    return (IsOccupied(tempPosition[0].GetPos().Item1, tempPosition[0].GetPos().Item2-1) || IsOccupied(tempPosition[1].GetPos().Item1, tempPosition[1].GetPos().Item2-1) || IsOccupied(tempPosition[2].GetPos().Item1, tempPosition[2].GetPos().Item2-1) || IsOccupied(tempPosition[3].GetPos().Item1, tempPosition[3].GetPos().Item2-1));
 
                 case "right":
-                    return (IsOccupied(tempPosition[0].GetPos().Item1 - 1, tempPosition[0].GetPos().Item2+1) || IsOccupied(tempPosition[1].GetPos().Item1 - 1, tempPosition[1].GetPos().Item2+1) || IsOccupied(tempPosition[2].GetPos().Item1 - 1, tempPosition[2].GetPos().Item2+1) || IsOccupied(tempPosition[3].GetPos().Item1 - 1, tempPosition[3].GetPos().Item2+1));
+                    return (IsOccupied(tempPosition[0].GetPos().Item1, tempPosition[0].GetPos().Item2+1) || IsOccupied(tempPosition[1].GetPos().Item1, tempPosition[1].GetPos().Item2+1) || IsOccupied(tempPosition[2].GetPos().Item1, tempPosition[2].GetPos().Item2+1) || IsOccupied(tempPosition[3].GetPos().Item1, tempPosition[3].GetPos().Item2+1));
             }
             return false;
         }
