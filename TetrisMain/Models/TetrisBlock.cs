@@ -104,13 +104,18 @@ namespace TetrisMain.Models {
         // TODO change to work with substitute for Vector2Int
         // Block types could be enums
 
+        // By default Tuple<int,int> item1 is X-coordinate
+        // By default Tuple<int,int> item2 is Y-coordinate
+
         public Tuple<int, int>[,] JLSTZ_OFFSET_DATA {get; private set;}
 
         public Tuple<int, int>[,] I_OFFSET_DATA {get; private set;}
         public Tuple<int, int>[,] O_OFFSET_DATA {get; private set;}
 
         public int rotationIndex { get; private set; }
+        public Tuple<int, int> coordinates;
 
+        // Offset data
         private void SetOffsetData()
         {
             JLSTZ_OFFSET_DATA = new Tuple<int, int>[5,4];
@@ -172,15 +177,22 @@ namespace TetrisMain.Models {
             O_OFFSET_DATA[0, 3] = Tuple.Create(-1, 0);
         }
 
-        public void RotateTetrisBlock(bool clockwise, string type, bool shouldOffset)
+        // Perform rotation by changing position of each tile and offsetting it's position
+        // May add tetris block type later
+        public void RotateTetrisBlock(bool clockwise, bool shouldOffset)
         {
             int oldRotationIndex = rotationIndex;
             rotationIndex += clockwise ? 1 : -1;
             rotationIndex = CalculateModulo(rotationIndex, 4);
 
-            for (int i = 0; i < _tetrisBlock.Length; i++)
+            for (int i = 0; i < tetrisBlock.Length; i++)
             {
-                tiles[i].RotateTile(tiles[0].coordinates, clockwise);
+                // IMPORTANT
+                // tetrisBlock[0] is center tile other tiles rotate around
+                // not sure if center tiles are assigned properly, or even if they should be
+                // leaving it for later
+                // TODO should be adjusted after RotateTile changes
+                //tetrisBlock[i].RotateTile(tetrisBlock[0].GetPos(), clockwise);
             }
 
             if (!shouldOffset) // Probably not needed, shouldOffset parameter always true
@@ -192,7 +204,7 @@ namespace TetrisMain.Models {
 
             if (!canOffset)
             {
-               RotatePiece(!clockwise, false);
+                RotateTetrisBlock(!clockwise, false);
             }
         }
 
@@ -201,33 +213,48 @@ namespace TetrisMain.Models {
             return(x % m + m) % m;
         }
 
+        // Rotate tile around it's center position
+        // Center position is always tetrisBlock[0]
+        // TODO May be moved to Square.cs later
         private void RotateTile(Tuple<int, int> originPosition, bool clockwise)
         {
-            Tuple<int, int> relativePos = coordinates - originPos;
-            Tuple<int, int>[] rotMatrix = clockwise ? new Tuple<int, int>[2] { new Tuple<int, int>(0, -1), new Tuple<int, int>(1, 0) }
-                                            : new Tuple<int, int>[2] { new Tuple<int, int>(0, 1), new Tuple<int, int>(-1, 0) };
-            int newXPos = (rotMatrix[0].x * relativePos.x) + (rotMatrix[1].x * relativePos.y);
-            int newYPos = (rotMatrix[0].y * relativePos.x) + (rotMatrix[1].y * relativePos.y);
-            Tuple<int, int> newPos = new Tuple<int, int>(newXPos, newYPos);
+            //Tuple<int, int> relativePos = coordinates - originPosition;
+            // Tuple by design is immutable, so not sure if this will work:
+            Tuple<int, int> relativePos = new Tuple<int, int>((coordinates.Item1 - originPosition.Item1), (coordinates.Item2 - originPosition.Item2));
 
-            newPos += originPos;
+            // Setting rotation matrix according to the clockwise parameter
+            Tuple<int, int>[] rotMatrix = clockwise ? new Tuple<int, int>[2] { new Tuple<int, int>(0, -1), new Tuple<int, int>(1, 0) }
+                                                    : new Tuple<int, int>[2] { new Tuple<int, int>(0, 1), new Tuple<int, int>(-1, 0) };
+
+            int newXPos = (rotMatrix[0].Item1 * relativePos.Item1) + (rotMatrix[1].Item1 * relativePos.Item2);
+            int newYPos = (rotMatrix[0].Item2 * relativePos.Item1) + (rotMatrix[1].Item2 * relativePos.Item2);
+
+
+            //Tuple<int, int> newPos = new Tuple<int, int>(newXPos, newYPos);
+            //newPos += originPosition;
+            Tuple<int, int> newPos = new Tuple<int, int>(newXPos += originPosition.Item1, newYPos += originPosition.Item2);
+
             UpdatePosition(newPos);
         }
 
-        
-        private void UpdatePosition(Vector2Int newPos)
+        // Update position of single tile
+        private void UpdatePosition(Tuple<int, int> newPos)
         {
             coordinates = newPos;
-            Tuple<int, int> newV3Pos = new Tuple<int, int>(newPos.x, newPos.y);
-            gameObject.transform.position = newV3Pos;
+            Tuple<int, int> newV3Pos = new Tuple<int, int>(newPos.Item1, newPos.Item2);
+
+            // TODO Should be changed for substitute
+            //gameObject.transform.position = newV3Pos;
         }
 
         private bool Offset(int oldRotIndex, int newRotIndex)
         {
-            Vector2Int offsetVal1, offsetVal2, endOffset;
-            Vector2Int[,] curOffsetData;
-            
-            if(type.Equals("O-block"))
+            //Vector2Int offsetVal1, offsetVal2, endOffset;
+            //Vector2Int[,] curOffsetData;
+            Tuple<int, int> offsetVal1, offsetVal2, endOffset;
+            Tuple<int, int>[,] curOffsetData;
+
+            if (type.Equals("O-block"))
             {
                 curOffsetData = O_OFFSET_DATA;
             }
@@ -240,7 +267,8 @@ namespace TetrisMain.Models {
                 curOffsetData = JLSTZ_OFFSET_DATA;
             }
 
-            endOffset = Vector2Int.zero;
+            // Probably not needed
+            //endOffset = new Tuple<int, int>(0, 0);
 
             bool movePossible = false;
 
@@ -248,7 +276,8 @@ namespace TetrisMain.Models {
             {
                 offsetVal1 = curOffsetData[testIndex, oldRotIndex];
                 offsetVal2 = curOffsetData[testIndex, newRotIndex];
-                endOffset = offsetVal1 - offsetVal2;
+                endOffset = Tuple.Create(offsetVal1.Item1 - offsetVal2.Item1, offsetVal1.Item2 - offsetVal2.Item2);
+                //endOffset = offsetVal1 - offsetVal2;
                 if (CanMovePiece(endOffset))
                 {
                     movePossible = true;
@@ -258,73 +287,100 @@ namespace TetrisMain.Models {
 
             if (movePossible)
             {
-                MovePiece(endOffset);
+                // TODO assign endOffset
+                //MovePiece(endOffset);
             }
             else
             {
-                Debug.Log("Move impossible");
+                //Debug.Log("Move impossible");
             }
             return movePossible;
         }
 
-        private bool CanMovePiece(Vector2Int movement)
+        private bool CanMovePiece(Tuple<int, int> movement)
         {
-            for (int i = 0; i < tiles.Length; i++)
+            for (int i = 0; i < tetrisBlock.Length; i++)
             {
-                if (!tiles[i].CanTileMove(movement + tiles[i].coordinates))
-                {
-                    return false;
-                }
+                // TODO Should be adjusted after CanTileMove adjustments
+                //if (!tetrisBlock[i].CanTileMove(movement + tetrisBlock[i].GetPos()))
+                //{
+                //    return false;
+                //}
             }
             return true;
         }
 
-        private bool CanTileMove(Vector2Int endPosition)
+        // May be moved to Square.cs later
+        private bool CanTileMove(Tuple<int, int> endPosition)
         {
-            if (!BoardController.instance.IsInBounds(endPosition))
+            if (!IsInBounds(endPosition))
             {
                 return false;
             }
-            if (!BoardController.instance.IsPosEmpty(endPosition))
+            if (!IsPosEmpty(endPosition))
             {
                 return false;
             }
             return true;
         }
 
-        private bool IsInBounds(Vector2Int coordToTest)
+        private bool IsInBounds(Tuple<int, int> coordToTest)
         {
-            if (coordToTest.x < 0 || coordToTest.x >= gridSizeX || coordToTest.y < 0)
-            {
-                return false;
-            }
-            else
+            // TODO gridSizeX should be substituted for TetrisPlayboard sixeX
+            //if (coordToTest.Item1 < 0 || coordToTest.Item1 >= gridSizeX || coordToTest.Item2 < 0)
+            //{
+            //    return false;
+            //}
+            //else
+            //{
+            //    return true;
+            //}
+            return false;
+        }
+        public bool IsPosEmpty(Tuple<int, int> coordToTest)
+        {
+            if (coordToTest.Item2 >= 20)
             {
                 return true;
             }
+            // TODO GridUnit[,] fullGrid should changed for a substitute
+            //if (fullGrid[coordToTest.Item1, coordToTest.Item2].isOccupied)
+            //{
+            //    return false;
+            //}
+            //else
+            //{
+            //    return true;
+            //}
+            return false;
         }
-        private bool MovePiece(Vector2Int movement)
+
+        // May be moved to Square.cs later
+        public bool MovePiece(Tuple<int, int> movement)
         {
-            for (int i = 0; i < tiles.Length; i++)
+            for (int i = 0; i < tetrisBlock.Length; i++)
             {
-                if (!tiles[i].CanTileMove(movement + tiles[i].coordinates))
-                {
-                    Debug.Log("Cant Go there!");
-                    if(movement == Vector2Int.down)
-                    {
-                        SetPiece();
-                    }
-                    return false;
-                }
+                // TODO Should be adjusted after CanTileMove adjustments
+                // TODO SetPiece() Shoud be changed for a substitute
+                //if (!tetrisBlock[i].CanTileMove(movement + tetrisBlock[i].coordinates))
+                //{
+                //    // Debug.Log("Cant Go there!");
+                //    // movement == (0, -1)
+                //    if (movement.Item1 == 0 && movement.Item1 == -1)
+                //    {
+                //        SetPiece();
+                //    }
+                //    return false;
+                //}
             }
 
-            for(int i = 0; i< tiles.Length; i++)
+            for(int i = 0; i< tetrisBlock.Length; i++)
             {
-                tiles[i].MoveTile(movement);
+                // TODO Should be adjusted after MovePiece adjustments
+                //tetrisBlock[i].MoveTile(movement);
             }
 
             return true;
         }
-
     }
 }
