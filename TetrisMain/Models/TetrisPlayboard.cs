@@ -100,6 +100,14 @@ namespace TetrisMain.Models {
             if (CheckCollision("down", currentPiece.SimulatedBlockMove(-1)))
                 gameOver = true;
         }
+
+        private readonly string highScoreFile;
+        public int Score { get; private set; }
+        public int HighScore
+        {
+            get; private set;
+        }
+
         public void ClearLines() {
             for (int i = 19; i >= 0; i--) {
                 if (lineBlockCount[i] == 10) //TO-DO add score count
@@ -112,6 +120,16 @@ namespace TetrisMain.Models {
                 }
             }
         }
+        private readonly int[] ScorePerLines = { 1, 40, 100, 300, 1200 };
+        /*public void AddToScore(int level, int line)
+        {
+            this.Score += ScorePerLines[line] * level;
+            if (this.Score > this.HighScore)
+            {
+                this.HighScore = this.Score;
+            }
+        }
+
         public void MoveTetrisBlock(string direction) {
             switch (direction) {
                 case "down":
