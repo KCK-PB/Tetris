@@ -103,15 +103,11 @@
         {
             get; private set;
         }
+
         public void ClearLines() {
             for (int i = 19; i >= 0; i--) {
                 if (lineBlockCount[i] == 10) //TO-DO add score count
                 {
-                    this.Score++;
-                    if (this.Score > this.HighScore)
-                    {
-                        this.HighScore = this.Score;
-                    }
                     for (int j = i; j < 23; j++) {
                         lineBlockCount[j] = lineBlockCount[j + 1];
                         for (int k = 0; k < 10; k++)
@@ -120,6 +116,16 @@
                 }
             }
         }
+
+        /*public void AddToScore(int level, int line)
+        {
+            this.Score += ScorePerLines[line] * level;
+            if (this.Score > this.HighScore)
+            {
+                this.HighScore = this.Score;
+            }
+        }*/
+
         public void MoveTetrisBlock(string direction) {
             switch (direction) {
                 case "down":
