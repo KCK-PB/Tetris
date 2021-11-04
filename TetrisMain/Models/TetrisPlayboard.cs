@@ -71,7 +71,7 @@
             var tempPosition = currentPiece.GetPosition();
 
             for (var i = 0; i < 4; i++)
-                drawboard[tempPosition[i].GetPos().Item1, tempPosition[i].GetPos().Item2] = 'X';
+                drawboard[tempPosition[i].GetPos().Item1, tempPosition[i].GetPos().Item2] = '▓'; //■
         }
         public bool CheckCollision(string direction, Square[] tempPosition) {
             switch (direction) {
