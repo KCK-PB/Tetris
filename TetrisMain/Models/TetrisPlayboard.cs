@@ -1,12 +1,15 @@
-﻿namespace TetrisMain.Models {
+﻿using System;
+using System.Threading;
+namespace TetrisMain.Models {
     public class TetrisPlayboard {
         private char[,] playboard;
         public char[,] drawboard;
         private int[] lineBlockCount;
         private bool gameInProgress;
         private bool gameOver;
+        Timers.Timer gameClock = null;
         private TetrisBlock currentPiece = new("J-block"); //placeholder current piece, TO-DO: add method to create current piece when last was placed on playboard
-        private static TetrisPlayboard instance = null;
+        private static readonly TetrisPlayboard instance = new TetrisPlayboard();
 
         private TetrisPlayboard() {
             playboard = new char[24, 10];
@@ -14,6 +17,7 @@
             lineBlockCount = new int[24];
             gameInProgress = false;
             gameOver = false;
+            gameClock = new Timers.Timer(this);
             for (var i = 0; i < 24; i++)
                 for (var j = 0; j < 10; j++) {
                     playboard[i, j] = '.';
@@ -44,15 +48,15 @@
         }
 
         public static TetrisPlayboard GetInstance() {
-            if (instance == null)
-                instance = new TetrisPlayboard();
             return instance;
         }
         public void StartGame() {
             gameInProgress = true;
+            gameClock.EnableTimer();
         }
         public void StopGame() {
             gameInProgress = false;
+            gameClock.DisableTimer();
         }
         public bool IsGameInProgress() {
             return gameInProgress;
@@ -122,7 +126,6 @@
                     else currentPiece.MoveTetrisBlock(direction);
                     break;
             }
-            IsGameOver();
         }
         public void InstantPlaceBlock() {
             bool stuck = false;
@@ -139,9 +142,20 @@
         public void IsGameOver() {
             if (gameOver == true) {
                 gameInProgress = false;
+                DrawGameOverScreen();
+                StopGame();
                 //TO-DO display score etc.
             }
-
+        }
+        private void DrawGameOverScreen() {
+            drawboard[15, 0] = ' '; drawboard[15, 1] = ' '; drawboard[15, 2] = ' '; drawboard[15, 3] = 'G'; drawboard[15, 4] = 'A'; drawboard[15, 5] = 'M'; drawboard[15, 6] = 'E'; drawboard[15, 7] = ' '; drawboard[15, 8] = ' '; drawboard[15, 9] = ' ';
+            drawboard[14, 0] = ' '; drawboard[14, 1] = ' '; drawboard[14, 2] = ' '; drawboard[14, 3] = 'O'; drawboard[14, 4] = 'V'; drawboard[14, 5] = 'E'; drawboard[14, 6] = 'R'; drawboard[14, 7] = ' '; drawboard[14, 8] = ' '; drawboard[14, 9] = ' ';
+            drawboard[12, 0] = ' '; drawboard[12, 1] = ' '; drawboard[12, 2] = 'S'; drawboard[12, 3] = 'C'; drawboard[12, 4] = 'O'; drawboard[12, 5] = 'R'; drawboard[12, 6] = 'E'; drawboard[12, 7] = ':'; drawboard[12, 8] = ' '; drawboard[12, 9] = ' ';
+            drawboard[11, 0] = ' '; drawboard[11, 1] = ' '; drawboard[11, 2] = '0'; drawboard[11, 3] = '0'; drawboard[11, 4] = '0'; drawboard[11, 5] = '0'; drawboard[11, 6] = '0'; drawboard[11, 7] = '0'; drawboard[11, 8] = ' '; drawboard[11, 9] = ' ';
+            drawboard[7, 0] = ' '; drawboard[7, 1] = 'P'; drawboard[7, 2] = 'R'; drawboard[7, 3] = 'E'; drawboard[7, 4] = 'S'; drawboard[7, 5] = 'S'; drawboard[7, 6] = ' '; drawboard[7, 7] = ' '; drawboard[7, 8] = ' '; drawboard[7, 9] = ' ';
+            drawboard[6, 0] = ' '; drawboard[6, 1] = 'E'; drawboard[6, 2] = 'N'; drawboard[6, 3] = 'T'; drawboard[6, 4] = 'E'; drawboard[6, 5] = 'R'; drawboard[6, 6] = ' '; drawboard[6, 7] = 'T'; drawboard[6, 8] = 'O'; drawboard[6, 9] = ' ';
+            drawboard[5, 0] = ' '; drawboard[5, 1] = 'R'; drawboard[5, 2] = 'E'; drawboard[5, 3] = 'T'; drawboard[5, 4] = 'U'; drawboard[5, 5] = 'R'; drawboard[5, 6] = 'N'; drawboard[5, 7] = ' '; drawboard[5, 8] = 'T'; drawboard[5, 9] = 'O';
+            drawboard[4, 0] = ' '; drawboard[4, 1] = 'M'; drawboard[4, 2] = 'A'; drawboard[4, 3] = 'I'; drawboard[4, 4] = 'N'; drawboard[4, 5] = ' '; drawboard[4, 6] = 'M'; drawboard[4, 7] = 'E'; drawboard[4, 8] = 'N'; drawboard[4, 9] = 'U';
         }
     }
 }

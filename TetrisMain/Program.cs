@@ -1,37 +1,4 @@
-﻿//using System;
-//using TetrisMain.Timers;
-//using TetrisMain.Parser;
-//using System.Media;
-//using TetrisMain.Models;
-
-//namespace TetrisMain {
-//    class Program {
-//        static void Main(string[] args) {
-//            Timer gameClock = new Timer();
-//            ConsoleKey keyinfo;
-//            TetrisPlayboard playboard = TetrisPlayboard.GetInstance();
-//            playboard.StartGame();
-//            while (playboard.IsGameInProgress()) {
-//                keyinfo = Console.ReadKey().Key;
-//                switch (keyinfo) {
-//                    case ConsoleKey.LeftArrow:
-//                        playboard.MoveTetrisBlock("left");
-//                        break;
-//                    case ConsoleKey.RightArrow:
-//                        playboard.MoveTetrisBlock("right");
-//                        break;
-//                    case ConsoleKey.UpArrow:
-//                        //playboard.RotateBlock();
-//                        break;
-//                    case ConsoleKey.Spacebar:
-//                        //playboard.InstantPlaceBlock();
-//                        break;
-//                }
-//            }
-//        }
-//    }
-//}
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System;
 using System.Linq;
 using System.Threading;
@@ -87,29 +54,31 @@ namespace TetrisMain {
         }
         static void PrepareGame() {
             Console.Clear();
-            Timers.Timer gameClock = new Timers.Timer();
+            //Timers.Timer gameClock = new Timers.Timer();
             ConsoleKey keyPress;
             TetrisPlayboard playboard = TetrisPlayboard.GetInstance();
             playboard.StartGame();
             while (playboard.IsGameInProgress()) {
                 keyPress = Console.ReadKey().Key;
-                switch (keyPress) {
-                    case ConsoleKey.LeftArrow:
-                        playboard.MoveTetrisBlock("left");
-                        break;
-                    case ConsoleKey.RightArrow:
-                        playboard.MoveTetrisBlock("right");
-                        break;
-                    case ConsoleKey.UpArrow:
-                        //playboard.RotateBlock();
-                        break;
-                    case ConsoleKey.Spacebar:
-                        playboard.InstantPlaceBlock();
-                        break;
+                if(playboard.IsGameInProgress())
+                    switch (keyPress) {
+                        case ConsoleKey.LeftArrow:
+                            playboard.MoveTetrisBlock("left");
+                            break;
+                        case ConsoleKey.RightArrow:
+                            playboard.MoveTetrisBlock("right");
+                            break;
+                        case ConsoleKey.UpArrow:
+                            //playboard.RotateBlock();
+                            break;
+                        case ConsoleKey.Spacebar:
+                            playboard.InstantPlaceBlock();
+                            break;
+                    }
+                else if (keyPress == ConsoleKey.Enter) {
+                    WriteMenu(options, options.Last());
                 }
             }
-            gameClock.DisableTimer();
-            Console.Write("GAME OVER");
         }
 
 

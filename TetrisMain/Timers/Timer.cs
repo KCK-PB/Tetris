@@ -5,12 +5,13 @@
 
     public class Timer {
         private static System.Timers.Timer aTimer;
-        private static TetrisPlayboard playboard = TetrisPlayboard.GetInstance();
-        public Timer() {
+        private static TetrisPlayboard playboard;
+        public Timer(TetrisPlayboard plyboard) {
+            playboard = plyboard;
             aTimer = new System.Timers.Timer(333);
             aTimer.Elapsed += OnTimedEvent;
             aTimer.AutoReset = true;
-            aTimer.Enabled = true;
+            aTimer.Enabled = false;
         }
 
         public void DisableTimer() {
@@ -24,6 +25,7 @@
             Console.Clear();
             playboard.MoveTetrisBlock("down");
             playboard.DrawBoard();
+            playboard.IsGameOver();
             for (int i = 23; i >= 0; i--) {
                 for (int j = 0; j < 10; j++) {
                     Console.Write(playboard.drawboard[i, j]);
