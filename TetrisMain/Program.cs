@@ -1,78 +1,142 @@
-﻿using System;
+﻿//using System;
+//using TetrisMain.Timers;
+//using TetrisMain.Parser;
+//using System.Media;
+//using TetrisMain.Models;
+
+//namespace TetrisMain {
+//    class Program {
+//        static void Main(string[] args) {
+//            Timer gameClock = new Timer();
+//            ConsoleKey keyinfo;
+//            TetrisPlayboard playboard = TetrisPlayboard.GetInstance();
+//            playboard.StartGame();
+//            while (playboard.IsGameInProgress()) {
+//                keyinfo = Console.ReadKey().Key;
+//                switch (keyinfo) {
+//                    case ConsoleKey.LeftArrow:
+//                        playboard.MoveTetrisBlock("left");
+//                        break;
+//                    case ConsoleKey.RightArrow:
+//                        playboard.MoveTetrisBlock("right");
+//                        break;
+//                    case ConsoleKey.UpArrow:
+//                        //playboard.RotateBlock();
+//                        break;
+//                    case ConsoleKey.Spacebar:
+//                        //playboard.InstantPlaceBlock();
+//                        break;
+//                }
+//            }
+//        }
+//    }
+//}
+using System.Collections.Generic;
+using System;
+using System.Linq;
+using System.Threading;
 using TetrisMain.Timers;
-using TetrisMain.Parser;
 using System.Media;
+using TetrisMain.Models;
 
-namespace TetrisMain
-{
-    class Program
-    {
-        static void Main(string[] args)
-        {
-            bool showMenu = true;
-            Timer gameClock = new Timer();
-            while (true)
-            {
-
-            }
-            SoundPlayer player = new SoundPlayer
-            {
+namespace TetrisMain {
+    class Program {
+        public static List<Option> options;
+        static void Main(string[] args) {
+            bool ShowMenu = true;
+            SoundPlayer player = new SoundPlayer { //TO-DO fix sound player
                 SoundLocation = "Simple Melody.wav"
             };
-            player.Play();
-            while (showMenu)
-            {
-                //DrawBorder();
-                //showMenu = MainMenu();
-            }
-        }
-        private static bool MainMenu()
-        {
-            //Console.WriteLine(String.Format("\n|{0,10}|{1,10}|", "Choose an option", "1) Start game"));
-            var menu = new[] { 
-                (1, "Start game"),
-                (2, "Level"),
-                (3, "Store"),
-                (4, "Exit")
+            options = new List<Option>{
+                new Option("Start Game", () => PrepareGame()),
+                new Option("Continue", () =>  WriteTemporaryMessage("Continue")),
+                new Option("Scoreboard", () =>  WriteTemporaryMessage("Scoreboard")),
+                new Option("Exit", () => Environment.Exit(0)),
             };
-
-            Console.WriteLine(" Choose an option:\n");
-            Console.WriteLine(menu.ToStringTable(new[] { "Key", "Option Name" }, x => x.Item1, x => x.Item2));
-            //Console.WriteLine();
-            //Console.WriteLine("2) Level");
-            //Console.WriteLine("3) gbhvp;lkk8Store");
-            //Console.WriteLine("4) Exit");
-            Console.Write("\r\nSelect an option: ");
-
-            switch (Console.ReadLine())
-            {
-                case "1":
-                    return true;
-                case "2":
-                    return true;
-                case "3":
-                    return false;
-                case "4":
-                    return false;
-                default:
-                    return true;
+            int index = 0;
+            WriteMenu(options, options[index]);
+            ConsoleKeyInfo keyinfo;
+            do {
+                keyinfo = Console.ReadKey();
+                if (keyinfo.Key == ConsoleKey.DownArrow) {
+                    if (index + 1 < options.Count) {
+                        index++;
+                        WriteMenu(options, options[index]);
+                    }
+                }
+                if (keyinfo.Key == ConsoleKey.UpArrow) {
+                    if (index - 1 >= 0) {
+                        index--;
+                        WriteMenu(options, options[index]);
+                    }
+                }
+                if (keyinfo.Key == ConsoleKey.Enter) {
+                    options[index].Selected.Invoke();
+                    index = 0;
+                }
             }
+            while (ShowMenu==true);
+                Console.ReadKey();
         }
-        public static void DrawBorder()
-        {
-            for (int lengthCount = 0; lengthCount <= 22; ++lengthCount)
-            {
-                Console.SetCursorPosition(0, lengthCount);
-                Console.Write("|");
-                Console.SetCursorPosition(21, lengthCount);
-                Console.Write("|");
-            }
-            Console.SetCursorPosition(0, 23);
-            for (int widthCount = 0; widthCount <= 10; widthCount++)
-            {
-                Console.Write("--");
-            }
 
+        static void WriteTemporaryMessage(string message) { //TO-DO make actual options for menu
+            Console.Clear();
+            Console.WriteLine(message);
+            Thread.Sleep(3000);
+            WriteMenu(options, options.Last());
+        }
+        static void PrepareGame() {
+            Console.Clear();
+            Timers.Timer gameClock = new Timers.Timer();
+            ConsoleKey keyPress;
+            TetrisPlayboard playboard = TetrisPlayboard.GetInstance();
+            playboard.StartGame();
+            while (playboard.IsGameInProgress()) {
+                keyPress = Console.ReadKey().Key;
+                switch (keyPress) {
+                    case ConsoleKey.LeftArrow:
+                        playboard.MoveTetrisBlock("left");
+                        break;
+                    case ConsoleKey.RightArrow:
+                        playboard.MoveTetrisBlock("right");
+                        break;
+                    case ConsoleKey.UpArrow:
+                        //playboard.RotateBlock();
+                        break;
+                    case ConsoleKey.Spacebar:
+                        playboard.InstantPlaceBlock();
+                        break;
+                }
+            }
+            gameClock.DisableTimer();
+            Console.Write("GAME OVER");
+        }
+
+
+        static void WriteMenu(List<Option> options, Option selectedOption) {
+            Console.Clear();
+
+            foreach (Option option in options) {
+                if (option == selectedOption) {
+                    Console.Write("> ");
+                }
+                else {
+                    Console.Write(" ");
+                }
+
+                Console.WriteLine(option.Name);
+            }
         }
     }
+
+    public class Option {
+        public string Name { get; }
+        public Action Selected { get; }
+
+        public Option(string name, Action selected) {
+            Name = name;
+            Selected = selected;
+        }
+    }
+
 }
