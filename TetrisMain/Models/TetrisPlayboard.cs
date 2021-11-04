@@ -96,10 +96,22 @@
             if (CheckCollision("down", currentPiece.SimulatedBlockMove(-1)))
                 gameOver = true;
         }
+
+        private readonly string highScoreFile;
+        public int Score { get; private set; }
+        public int HighScore
+        {
+            get; private set;
+        }
         public void ClearLines() {
             for (int i = 19; i >= 0; i--) {
                 if (lineBlockCount[i] == 10) //TO-DO add score count
                 {
+                    this.Score++;
+                    if (this.Score > this.HighScore)
+                    {
+                        this.HighScore = this.Score;
+                    }
                     for (int j = i; j < 23; j++) {
                         lineBlockCount[j] = lineBlockCount[j + 1];
                         for (int k = 0; k < 10; k++)
