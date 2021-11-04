@@ -24,21 +24,21 @@
             for (int i = 0; i < 10; i++) {
                 if (i == 4 || i == 5)
                     continue;
-                playboard[0, i] = 'O';
+                playboard[0, i] = '▓';
             }
 
             lineBlockCount[3] = 8;
             for (int i = 0; i < 10; i++) {
                 if (i == 4 || i == 5)
                     continue;
-                playboard[3, i] = 'O';
+                playboard[3, i] = '▓';
             }
 
             lineBlockCount[6] = 8;
             for (int i = 0; i < 10; i++) {
                 if (i == 4 || i == 5)
                     continue;
-                playboard[6, i] = 'O';
+                playboard[6, i] = '▓';
             }
             //TEMPORARY END
         }
@@ -89,7 +89,7 @@
         public void PlaceBlock() {
             var tempPosition = currentPiece.GetPosition();
             for (int i = 0; i < 4; i++) {
-                playboard[tempPosition[i].GetPos().Item1, tempPosition[i].GetPos().Item2] = 'O';
+                playboard[tempPosition[i].GetPos().Item1, tempPosition[i].GetPos().Item2] = '▓';
                 lineBlockCount[tempPosition[i].GetPos().Item1]++;
             }
             currentPiece = new TetrisBlock("I-block"); //TEMPORARY
