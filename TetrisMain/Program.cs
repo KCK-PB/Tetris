@@ -24,7 +24,7 @@ namespace TetrisMain {
             WriteMenu(options, options[index]);
             ConsoleKeyInfo keyinfo;
             do {
-                keyinfo = Console.ReadKey();
+                keyinfo = Console.ReadKey(true);
                 if (keyinfo.Key == ConsoleKey.DownArrow) {
                     if (index + 1 < options.Count) {
                         index++;
@@ -53,7 +53,7 @@ namespace TetrisMain {
             WriteMenu(options, options.Last());
         }
         static void PrepareGame() {
-            Console.Clear();
+            //Console.Clear();
             //Timers.Timer gameClock = new Timers.Timer();
             ConsoleKey keyPress;
             TetrisPlayboard playboard = TetrisPlayboard.GetInstance();
