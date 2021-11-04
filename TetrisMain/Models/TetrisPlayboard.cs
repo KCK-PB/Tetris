@@ -116,7 +116,7 @@
                 }
             }
         }
-
+        private readonly int[] ScorePerLines = { 1, 40, 100, 300, 1200 };
         /*public void AddToScore(int level, int line)
         {
             this.Score += ScorePerLines[line] * level;
@@ -124,7 +124,7 @@
             {
                 this.HighScore = this.Score;
             }
-        }*/
+        }
 
         public void MoveTetrisBlock(string direction) {
             switch (direction) {
