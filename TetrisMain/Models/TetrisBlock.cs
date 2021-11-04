@@ -101,77 +101,76 @@ namespace TetrisMain.Models {
             for (var i = 0; i < 4; i++) tetrisBlock[i].MovePos("down", lines);
         }
 
-        // TODO change Vector2Int for substitute
         // TODO change to work with substitute for Vector2Int
         // Block types could be enums
 
-        public Vector2Int[,] JLSTZ_OFFSET_DATA {get; private set;}
-        public Vector2Int[,] I_OFFSET_DATA {get; private set;}
-        public Vector2Int[,] O_OFFSET_DATA {get; private set;}
+        public Tuple<int, int>[,] JLSTZ_OFFSET_DATA {get; private set;}
+
+        public Tuple<int, int>[,] I_OFFSET_DATA {get; private set;}
+        public Tuple<int, int>[,] O_OFFSET_DATA {get; private set;}
 
         public int rotationIndex { get; private set; }
 
         private void SetOffsetData()
         {
-            JLSTZ_OFFSET_DATA = new Vector2Int[5, 4];
-            JLSTZ_OFFSET_DATA[0, 0] = Vector2Int.zero;
-            JLSTZ_OFFSET_DATA[0, 1] = Vector2Int.zero;
-            JLSTZ_OFFSET_DATA[0, 2] = Vector2Int.zero;
-            JLSTZ_OFFSET_DATA[0, 3] = Vector2Int.zero;
+            JLSTZ_OFFSET_DATA = new Tuple<int, int>[5,4];
+            JLSTZ_OFFSET_DATA[0, 0] = Tuple.Create(0,0);
+            JLSTZ_OFFSET_DATA[0, 1] = Tuple.Create(0,0);
+            JLSTZ_OFFSET_DATA[0, 2] = Tuple.Create(0,0);
+            JLSTZ_OFFSET_DATA[0, 3] = Tuple.Create(0,0);
 
-            JLSTZ_OFFSET_DATA[1, 0] = Vector2Int.zero;
-            JLSTZ_OFFSET_DATA[1, 1] = new Vector2Int(1,0);
-            JLSTZ_OFFSET_DATA[1, 2] = Vector2Int.zero;
-            JLSTZ_OFFSET_DATA[1, 3] = new Vector2Int(-1, 0);
+            JLSTZ_OFFSET_DATA[1, 0] = Tuple.Create(0, 0);
+            JLSTZ_OFFSET_DATA[1, 1] = Tuple.Create(1, 0);
+            JLSTZ_OFFSET_DATA[1, 2] = Tuple.Create(0, 0);
+            JLSTZ_OFFSET_DATA[1, 3] = Tuple.Create(-1, 0);
 
-            JLSTZ_OFFSET_DATA[2, 0] = Vector2Int.zero;
-            JLSTZ_OFFSET_DATA[2, 1] = new Vector2Int(1, -1);
-            JLSTZ_OFFSET_DATA[2, 2] = Vector2Int.zero;
-            JLSTZ_OFFSET_DATA[2, 3] = new Vector2Int(-1, -1);
+            JLSTZ_OFFSET_DATA[2, 0] = Tuple.Create(0, 0);
+            JLSTZ_OFFSET_DATA[2, 1] = Tuple.Create(1, -1);
+            JLSTZ_OFFSET_DATA[2, 2] = Tuple.Create(0, 0);
+            JLSTZ_OFFSET_DATA[2, 3] = Tuple.Create(-1, -1);
 
-            JLSTZ_OFFSET_DATA[3, 0] = Vector2Int.zero;
-            JLSTZ_OFFSET_DATA[3, 1] = new Vector2Int(0, 2);
-            JLSTZ_OFFSET_DATA[3, 2] = Vector2Int.zero;
-            JLSTZ_OFFSET_DATA[3, 3] = new Vector2Int(0, 2);
+            JLSTZ_OFFSET_DATA[3, 0] = Tuple.Create(0, 0);
+            JLSTZ_OFFSET_DATA[3, 1] = Tuple.Create(0, 2);
+            JLSTZ_OFFSET_DATA[3, 2] = Tuple.Create(0, 0);
+            JLSTZ_OFFSET_DATA[3, 3] = Tuple.Create(0, 2);
 
-            JLSTZ_OFFSET_DATA[4, 0] = Vector2Int.zero;
-            JLSTZ_OFFSET_DATA[4, 1] = new Vector2Int(1, 2);
-            JLSTZ_OFFSET_DATA[4, 2] = Vector2Int.zero;
-            JLSTZ_OFFSET_DATA[4, 3] = new Vector2Int(-1, 2);
+            JLSTZ_OFFSET_DATA[4, 0] = Tuple.Create(0, 0);
+            JLSTZ_OFFSET_DATA[4, 1] = Tuple.Create(1, 2);
+            JLSTZ_OFFSET_DATA[4, 2] = Tuple.Create(0, 0);
+            JLSTZ_OFFSET_DATA[4, 3] = Tuple.Create(-1, 2);
 
-            I_OFFSET_DATA = new Vector2Int[5, 4];
-            I_OFFSET_DATA[0, 0] = Vector2Int.zero;
-            I_OFFSET_DATA[0, 1] = new Vector2Int(-1, 0);
-            I_OFFSET_DATA[0, 2] = new Vector2Int(-1, 1);
-            I_OFFSET_DATA[0, 3] = new Vector2Int(0, 1);
+            I_OFFSET_DATA = new Tuple<int, int>[5, 4];
+            I_OFFSET_DATA[0, 0] = Tuple.Create(0, 0);
+            I_OFFSET_DATA[0, 1] = Tuple.Create(-1, 0);
+            I_OFFSET_DATA[0, 2] = Tuple.Create(-1, 1);
+            I_OFFSET_DATA[0, 3] = Tuple.Create(0, 1);
 
-            I_OFFSET_DATA[1, 0] = new Vector2Int(-1, 0);
-            I_OFFSET_DATA[1, 1] = Vector2Int.zero;
-            I_OFFSET_DATA[1, 2] = new Vector2Int(1, 1);
-            I_OFFSET_DATA[1, 3] = new Vector2Int(0, 1);
+            I_OFFSET_DATA[1, 0] = Tuple.Create(-1, 0);
+            I_OFFSET_DATA[1, 1] = Tuple.Create(0, 0);
+            I_OFFSET_DATA[1, 2] = Tuple.Create(1, 1);
+            I_OFFSET_DATA[1, 3] = Tuple.Create(0, 1);
 
-            I_OFFSET_DATA[2, 0] = new Vector2Int(2, 0);
-            I_OFFSET_DATA[2, 1] = Vector2Int.zero;
-            I_OFFSET_DATA[2, 2] = new Vector2Int(-2, 1);
-            I_OFFSET_DATA[2, 3] = new Vector2Int(0, 1);
+            I_OFFSET_DATA[2, 0] = Tuple.Create(2, 0);
+            I_OFFSET_DATA[2, 1] = Tuple.Create(0, 0);
+            I_OFFSET_DATA[2, 2] = Tuple.Create(-2, 1);
+            I_OFFSET_DATA[2, 3] = Tuple.Create(0, 1);
 
-            I_OFFSET_DATA[3, 0] = new Vector2Int(-1, 0);
-            I_OFFSET_DATA[3, 1] = new Vector2Int(0, 1);
-            I_OFFSET_DATA[3, 2] = new Vector2Int(1, 0);
-            I_OFFSET_DATA[3, 3] = new Vector2Int(0, -1);
+            I_OFFSET_DATA[3, 0] = Tuple.Create(-1, 0);
+            I_OFFSET_DATA[3, 1] = Tuple.Create(0, 1);
+            I_OFFSET_DATA[3, 2] = Tuple.Create(1, 0);
+            I_OFFSET_DATA[3, 3] = Tuple.Create(0, -1);
 
-            I_OFFSET_DATA[4, 0] = new Vector2Int(2, 0);
-            I_OFFSET_DATA[4, 1] = new Vector2Int(0, -2);
-            I_OFFSET_DATA[4, 2] = new Vector2Int(-2, 0);
-            I_OFFSET_DATA[4, 3] = new Vector2Int(0, 2);
+            I_OFFSET_DATA[4, 0] = Tuple.Create(2, 0);
+            I_OFFSET_DATA[4, 1] = Tuple.Create(0, -2);
+            I_OFFSET_DATA[4, 2] = Tuple.Create(-2, 0);
+            I_OFFSET_DATA[4, 3] = Tuple.Create(0, 2);
 
-            O_OFFSET_DATA = new Vector2Int[1, 4];
-            O_OFFSET_DATA[0, 0] = Vector2Int.zero;
-            O_OFFSET_DATA[0, 1] = Vector2Int.down;
-            O_OFFSET_DATA[0, 2] = new Vector2Int(-1, -1);
-            O_OFFSET_DATA[0, 3] = Vector2Int.left;
+            O_OFFSET_DATA = new Tuple<int, int>[1, 4];
+            O_OFFSET_DATA[0, 0] = Tuple.Create(0, 0);
+            O_OFFSET_DATA[0, 1] = Tuple.Create(0, -1);
+            O_OFFSET_DATA[0, 2] = Tuple.Create(-1, 1);
+            O_OFFSET_DATA[0, 3] = Tuple.Create(-1, 0);
         }
-
 
         public void RotateTetrisBlock(bool clockwise, string type, bool shouldOffset)
         {
@@ -179,12 +178,12 @@ namespace TetrisMain.Models {
             rotationIndex += clockwise ? 1 : -1;
             rotationIndex = CalculateModulo(rotationIndex, 4);
 
-            foreach(var tile in _tetrisBlock)
+            for (int i = 0; i < _tetrisBlock.Length; i++)
             {
-                tile.RotateTile(tile[0].coordinates, clockwise);
+                tiles[i].RotateTile(tiles[0].coordinates, clockwise);
             }
 
-            if (!shouldOffset) // Probably not needed, shouldOffset always true
+            if (!shouldOffset) // Probably not needed, shouldOffset parameter always true
             {
                 return;
             }
@@ -193,7 +192,7 @@ namespace TetrisMain.Models {
 
             if (!canOffset)
             {
-                RotatePiece(!clockwise, false);
+               RotatePiece(!clockwise, false);
             }
         }
 
@@ -202,23 +201,24 @@ namespace TetrisMain.Models {
             return(x % m + m) % m;
         }
 
-        private void RotateTile(Vector2Int originPosition, bool clockwise)
+        private void RotateTile(Tuple<int, int> originPosition, bool clockwise)
         {
-            Vector2Int relativePos = coordinates - originPos;
-            Vector2Int[] rotMatrix = clockwise ? new Vector2Int[2] { new Vector2Int(0, -1), new Vector2Int(1, 0) }
-                                            : new Vector2Int[2] { new Vector2Int(0, 1), new Vector2Int(-1, 0) };
+            Tuple<int, int> relativePos = coordinates - originPos;
+            Tuple<int, int>[] rotMatrix = clockwise ? new Tuple<int, int>[2] { new Tuple<int, int>(0, -1), new Tuple<int, int>(1, 0) }
+                                            : new Tuple<int, int>[2] { new Tuple<int, int>(0, 1), new Tuple<int, int>(-1, 0) };
             int newXPos = (rotMatrix[0].x * relativePos.x) + (rotMatrix[1].x * relativePos.y);
             int newYPos = (rotMatrix[0].y * relativePos.x) + (rotMatrix[1].y * relativePos.y);
-            Vector2Int newPos = new Vector2Int(newXPos, newYPos);
+            Tuple<int, int> newPos = new Tuple<int, int>(newXPos, newYPos);
 
             newPos += originPos;
             UpdatePosition(newPos);
         }
 
+        
         private void UpdatePosition(Vector2Int newPos)
         {
             coordinates = newPos;
-            Vector3 newV3Pos = new Vector3(newPos.x, newPos.y);
+            Tuple<int, int> newV3Pos = new Tuple<int, int>(newPos.x, newPos.y);
             gameObject.transform.position = newV3Pos;
         }
 
@@ -325,5 +325,6 @@ namespace TetrisMain.Models {
 
             return true;
         }
+
     }
 }
