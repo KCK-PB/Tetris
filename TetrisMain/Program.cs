@@ -59,7 +59,7 @@ namespace TetrisMain {
             TetrisPlayboard playboard = TetrisPlayboard.GetInstance();
             playboard.StartGame();
             while (playboard.IsGameInProgress()) {
-                keyPress = Console.ReadKey().Key;
+                keyPress = Console.ReadKey(true).Key;
                 if(playboard.IsGameInProgress())
                     switch (keyPress) {
                         case ConsoleKey.LeftArrow:
@@ -76,7 +76,7 @@ namespace TetrisMain {
                             break;
                     }
                 else if (keyPress == ConsoleKey.Enter) {
-                    WriteMenu(options, options.Last());
+                    WriteMenu(options, options.First());
                 }
             }
         }
