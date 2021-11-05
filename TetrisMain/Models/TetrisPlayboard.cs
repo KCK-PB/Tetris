@@ -63,7 +63,12 @@ namespace TetrisMain.Models {
         }
         public bool IsOccupied(int posx, int posy) {
             if (posx < 0 || posy < 0 || posy > 9 || playboard[posx, posy] != ' ')
+            {
+                Console.WriteLine(posx + " " + posy);
+
                 return true;
+
+            }
             return false;
         }
 
@@ -96,7 +101,7 @@ namespace TetrisMain.Models {
                 playboard[tempPosition[i].GetPos().Item1, tempPosition[i].GetPos().Item2] = '█';
                 lineBlockCount[tempPosition[i].GetPos().Item1]++;
             }
-            currentPiece = new TetrisBlock("Z-block"); //TEMPORARY
+            currentPiece = new TetrisBlock("L-block"); //TEMPORARY
             if (CheckCollision("down", currentPiece.SimulatedBlockMove(-1)))
                 gameOver = true;
         }

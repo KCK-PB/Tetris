@@ -186,13 +186,13 @@ namespace TetrisMain.Models {
             rotationIndex += clockwise ? 1 : -1;
             rotationIndex = CalculateModulo(rotationIndex, 4);
 
-            Console.WriteLine(tetrisBlock[0].GetPos().Item2.ToString());
-
+            //Console.WriteLine(tetrisBlock[0].GetPos().Item1 + " " + tetrisBlock[0].GetPos().Item2);
 
             for (int i = 0; i < tetrisBlock.Length; i++)
             {
                 tetrisBlock[i].RotateTile(tetrisBlock[0].GetPos(), clockwise);
             }
+
 
             if (!shouldOffset)
             {
@@ -205,6 +205,7 @@ namespace TetrisMain.Models {
             {
                 RotateTetrisBlock(!clockwise, false);
             }
+
         }
 
         private int CalculateModulo(int x, int m)
@@ -238,9 +239,12 @@ namespace TetrisMain.Models {
             {
                 offsetVal1 = curOffsetData[testIndex, oldRotationIndex];
                 offsetVal2 = curOffsetData[testIndex, newRotationIndex];
-                endOffset = Tuple.Create(offsetVal1.Item1 - offsetVal2.Item1, offsetVal1.Item2 - offsetVal2.Item2);
+                endOffset = Tuple.Create(offsetVal1.Item2 - offsetVal2.Item2, offsetVal1.Item1 - offsetVal2.Item1);
+
                 if (CanMovePiece(endOffset))
                 {
+                    //Console.WriteLine(tetrisBlock[0].GetPos().Item2.ToString());
+                    
                     movePossible = true;
                     break;
                 }
@@ -265,8 +269,13 @@ namespace TetrisMain.Models {
 
                 Tuple<int, int> destinationPosition = new Tuple<int, int>(movement.Item1 + tetrisBlock[i].GetPos().Item1, movement.Item2 + tetrisBlock[i].GetPos().Item2);
 
+                //Console.WriteLine(tetrisBlock[0].GetPos().Item1 + " " + tetrisBlock[0].GetPos().Item2);
+                //Console.WriteLine(destinationPosition.Item1 + " " + destinationPosition.Item2);
+
+
                 if (!tetrisBlock[i].CanTileMove(destinationPosition))
                 {
+
                     return false;
                 }
             }
@@ -278,12 +287,12 @@ namespace TetrisMain.Models {
         {
             for (int i = 0; i < tetrisBlock.Length; i++)
             {
-                Tuple<int, int> destinationPosition = new Tuple<int, int>(movement.Item1 + tetrisBlock[i].GetPos().Item1, movement.Item2 + tetrisBlock[i].GetPos().Item2);
+                Tuple<int, int> destinationPosition = new Tuple<int, int>(movement.Item2 + tetrisBlock[i].GetPos().Item2, movement.Item1 + tetrisBlock[i].GetPos().Item1);
                 if (!tetrisBlock[i].CanTileMove(destinationPosition))
                 {
                     // Debug.Log("Cant Go there!");
                     // movement == (0, -1)
-                    if (movement.Item1 == 0 && movement.Item1 == -1)
+                    if (movement.Item2 == 0 && movement.Item1 == -1)
                     {
                         // TODO SetPiece() Shoud be changed for a substitute
                         // TetrisPlayboard.PlaceBlock(); ?
