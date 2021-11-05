@@ -67,6 +67,7 @@ namespace TetrisMain {
             ConsoleKey keyPress;
             TetrisPlayboard playboard = TetrisPlayboard.GetInstance();
             playboard.StartGame();
+            
             while (showMenu == false) {
                 keyPress = Console.ReadKey(true).Key;
                 if (playboard.IsGameInProgress())
@@ -78,7 +79,7 @@ namespace TetrisMain {
                             playboard.MoveTetrisBlock("right");
                             break;
                         case ConsoleKey.UpArrow:
-                            //playboard.RotateBlock();
+                            playboard.RotateTetrisBlock();
                             break;
                         case ConsoleKey.Spacebar:
                             playboard.InstantPlaceBlock();

@@ -66,7 +66,12 @@ namespace TetrisMain.Models {
         }
         public bool IsOccupied(int posx, int posy) {
             if (posx < 0 || posy < 0 || posy > 9 || playboard[posx, posy] != ' ')
+            {
+                Console.WriteLine(posx + " " + posy);
+
                 return true;
+
+            }
             return false;
         }
 
@@ -151,6 +156,12 @@ namespace TetrisMain.Models {
             if (this.score > this.highScore) {
                 this.highScore = this.score;
             }
+        }
+
+        public void RotateTetrisBlock()
+        {
+            currentPiece.SetOffsetData();
+            currentPiece.RotateTetrisBlock(true, true);
         }
 
         public void MoveTetrisBlock(string direction) {
