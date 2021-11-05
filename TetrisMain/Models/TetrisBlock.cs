@@ -310,5 +310,38 @@ namespace TetrisMain.Models {
 
             return true;
         }
+        public static TetrisBlock GetRandomBlock() {
+            Random rnd = new Random();
+            int selection = rnd.Next(1, 8);
+            switch (selection) {
+                case 1:
+                    return new TetrisBlock("Z-block");
+                case 2:
+                    return new TetrisBlock("J-block");
+                case 3:
+                    return new TetrisBlock("L-block");
+                case 4:
+                    return new TetrisBlock("T-block");
+                case 5:
+                    return new TetrisBlock("S-block");
+                case 6:
+                    return new TetrisBlock("I-block");
+                case 7:
+                    return new TetrisBlock("O-block");
+            }
+            return new TetrisBlock("unknown");
+        }
+        public TetrisBlock GetClone() {
+            Square[] virtualBlocks = new Square[4];
+            for (var i = 0; i < 4; i++) {
+                Tuple<int, int> tempPos = tetrisBlock[i].GetPos();
+                virtualBlocks[i] = new Square(tempPos.Item1, tempPos.Item2);
+            }
+            TetrisBlock virtualTetrisBlock = new TetrisBlock("unknown");
+            for (var i = 0; i < 4; i++) {
+                virtualTetrisBlock.tetrisBlock[i]=virtualBlocks[i];
+            }
+            return virtualTetrisBlock;
+        }
     }
 }

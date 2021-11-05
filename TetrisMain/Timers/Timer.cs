@@ -8,7 +8,7 @@
         private static TetrisPlayboard playboard;
         public Timer(TetrisPlayboard plyboard) {
             playboard = plyboard;
-            aTimer = new System.Timers.Timer(333);
+            aTimer = new System.Timers.Timer(Math.Max(150,1100-(100*playboard.GetLevel())));
             aTimer.Elapsed += OnTimedEvent;
             aTimer.AutoReset = true;
             aTimer.Enabled = false;
@@ -20,6 +20,9 @@
 
         public void EnableTimer() {
             aTimer.Enabled = true;
+        }
+        public void LevelUpTimer() {
+            aTimer.Interval = Math.Max(150, 1050 - (100 * playboard.GetLevel()));
         }
         private static void OnTimedEvent(Object source, ElapsedEventArgs e) { // Main game clock event, temporary implementation to test console drawing
             Console.Clear();
