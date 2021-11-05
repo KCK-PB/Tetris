@@ -2,7 +2,7 @@
 namespace TetrisMain.Models {
     public class TetrisBlock {
         private string type;
-        private Square[] tetrisBlock; 
+        private Square[] tetrisBlock;
 
         public Square[] GetPosition() {
             return tetrisBlock;
@@ -101,6 +101,27 @@ namespace TetrisMain.Models {
             for (var i = 0; i < 4; i++) tetrisBlock[i].MovePos("down", lines);
         }
         public void RotateTetrisBlock(string type) {
+        }
+        public static TetrisBlock GetRandomBlock() {
+            Random rnd = new Random();
+            int selection = rnd.Next(1, 8);
+            switch (selection) {
+                case 1:
+                    return new TetrisBlock("Z-block");
+                case 2:
+                    return new TetrisBlock("J-block");
+                case 3:
+                    return new TetrisBlock("L-block");
+                case 4:
+                    return new TetrisBlock("T-block");
+                case 5:
+                    return new TetrisBlock("S-block");
+                case 6:
+                    return new TetrisBlock("I-block");
+                case 7:
+                    return new TetrisBlock("O-block");
+            }
+            return new TetrisBlock("unknown");
         }
     }
 }
