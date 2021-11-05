@@ -8,39 +8,42 @@ namespace TetrisMain.Models {
             return tetrisBlock;
         }
 
+
         public string GetBlockType() {
             return type;
         }
 
         // Center tile for each block may need to be assigned
+        // Order temporarly changed for center tile functionality
         public TetrisBlock(string type) {
             this.type = type;
             tetrisBlock = new Square[4];
-            switch (type) {
+            switch (type)
+            {
                 case "Z-block":
-                    tetrisBlock[0] = new Square(21, 4);
+                    tetrisBlock[2] = new Square(21, 4);//
                     tetrisBlock[1] = new Square(21, 5);
-                    tetrisBlock[2] = new Square(20, 5);
+                    tetrisBlock[0] = new Square(20, 5);//
                     tetrisBlock[3] = new Square(20, 6);
                     break;
 
                 case "J-block":
-                    tetrisBlock[0] = new Square(22, 5);
-                    tetrisBlock[1] = new Square(21, 5);
+                    tetrisBlock[1] = new Square(22, 5);//
+                    tetrisBlock[0] = new Square(21, 5);//
                     tetrisBlock[2] = new Square(20, 4);
                     tetrisBlock[3] = new Square(20, 5);
                     break;
 
                 case "L-block":
-                    tetrisBlock[0] = new Square(22, 4);
-                    tetrisBlock[1] = new Square(21, 4);
+                    tetrisBlock[1] = new Square(22, 4);//
+                    tetrisBlock[0] = new Square(21, 4);//
                     tetrisBlock[2] = new Square(20, 4);
                     tetrisBlock[3] = new Square(20, 5);
                     break;
 
                 case "T-block":
-                    tetrisBlock[0] = new Square(21, 4);
-                    tetrisBlock[1] = new Square(21, 5);
+                    tetrisBlock[1] = new Square(21, 4);//
+                    tetrisBlock[0] = new Square(21, 5);//
                     tetrisBlock[2] = new Square(21, 6);
                     tetrisBlock[3] = new Square(20, 5);
                     break;
@@ -53,16 +56,16 @@ namespace TetrisMain.Models {
                     break;
 
                 case "I-block":
-                    tetrisBlock[0] = new Square(23, 4);
+                    tetrisBlock[2] = new Square(23, 4);//
                     tetrisBlock[1] = new Square(22, 4);
-                    tetrisBlock[2] = new Square(21, 4);
+                    tetrisBlock[0] = new Square(21, 4);//
                     tetrisBlock[3] = new Square(20, 4);
                     break;
 
                 case "O-block":
-                    tetrisBlock[0] = new Square(21, 4);
+                    tetrisBlock[2] = new Square(21, 4);//
                     tetrisBlock[1] = new Square(21, 5);
-                    tetrisBlock[2] = new Square(20, 4);
+                    tetrisBlock[0] = new Square(20, 4);//
                     tetrisBlock[3] = new Square(20, 5);
                     break;
                 default:
@@ -114,7 +117,7 @@ namespace TetrisMain.Models {
 
         // Offset data
         // May be declared as constants or on the start of the program
-        private void SetOffsetData()
+        public void SetOffsetData()
         {
             JLSTZ_OFFSET_DATA = new Tuple<int, int>[5,4];
             JLSTZ_OFFSET_DATA[0, 0] = Tuple.Create(0,0);
@@ -182,6 +185,9 @@ namespace TetrisMain.Models {
             int oldRotationIndex = rotationIndex;
             rotationIndex += clockwise ? 1 : -1;
             rotationIndex = CalculateModulo(rotationIndex, 4);
+
+            Console.WriteLine(tetrisBlock[0].GetPos().Item2.ToString());
+
 
             for (int i = 0; i < tetrisBlock.Length; i++)
             {
@@ -256,7 +262,9 @@ namespace TetrisMain.Models {
         {
             for (int i = 0; i < tetrisBlock.Length; i++)
             {
+
                 Tuple<int, int> destinationPosition = new Tuple<int, int>(movement.Item1 + tetrisBlock[i].GetPos().Item1, movement.Item2 + tetrisBlock[i].GetPos().Item2);
+
                 if (!tetrisBlock[i].CanTileMove(destinationPosition))
                 {
                     return false;

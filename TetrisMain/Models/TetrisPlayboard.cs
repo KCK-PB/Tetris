@@ -8,7 +8,7 @@ namespace TetrisMain.Models {
         private bool gameInProgress;
         private bool gameOver;
         Timers.Timer gameClock = null;
-        private TetrisBlock currentPiece = new("J-block"); //placeholder current piece, TO-DO: add method to create current piece when last was placed on playboard
+        private TetrisBlock currentPiece = new("Z-block"); //placeholder current piece, TO-DO: add method to create current piece when last was placed on playboard
         private static readonly TetrisPlayboard instance = new TetrisPlayboard();
 
         private TetrisPlayboard() {
@@ -96,7 +96,7 @@ namespace TetrisMain.Models {
                 playboard[tempPosition[i].GetPos().Item1, tempPosition[i].GetPos().Item2] = '█';
                 lineBlockCount[tempPosition[i].GetPos().Item1]++;
             }
-            currentPiece = new TetrisBlock("I-block"); //TEMPORARY
+            currentPiece = new TetrisBlock("Z-block"); //TEMPORARY
             if (CheckCollision("down", currentPiece.SimulatedBlockMove(-1)))
                 gameOver = true;
         }
@@ -129,6 +129,12 @@ namespace TetrisMain.Models {
                 this.HighScore = this.Score;
             }
         }*/
+
+        public void RotateTetrisBlock()
+        {
+            currentPiece.SetOffsetData();
+            currentPiece.RotateTetrisBlock(true, true);
+        }
 
         public void MoveTetrisBlock(string direction) {
             switch (direction) {
