@@ -8,8 +8,7 @@ namespace TetrisMain.Models {
         private bool gameInProgress;
         private bool gameOver;
         Timers.Timer gameClock = null;
-        private TetrisBlock currentBlock;
-        private TetrisBlock nextBlock;
+        private TetrisBlock currentPiece = new("J-block"); //placeholder current piece, TO-DO: add method to create current piece when last was placed on playboard
         private static readonly TetrisPlayboard instance = new TetrisPlayboard();
 
         private TetrisPlayboard() {
@@ -24,9 +23,6 @@ namespace TetrisMain.Models {
                     playboard[i, j] = ' ';
                     drawboard[i, j] = ' ';
                 }
-            currentBlock = TetrisBlock.GetRandomBlock();
-            nextBlock = TetrisBlock.GetRandomBlock();
-         
             //TEMPORARY
             lineBlockCount[0] = 8;
             for (int i = 0; i < 10; i++) {
@@ -76,7 +72,7 @@ namespace TetrisMain.Models {
                 for (var j = 0; j < 10; j++)
                     drawboard[i, j] = playboard[i, j];
 
-            var tempPosition = currentBlock.GetPosition();
+            var tempPosition = currentPiece.GetPosition();
 
             for (var i = 0; i < 4; i++)
                 drawboard[tempPosition[i].GetPos().Item1, tempPosition[i].GetPos().Item2] = '█'; //■
@@ -95,13 +91,13 @@ namespace TetrisMain.Models {
             return false;
         }
         public void PlaceBlock() {
-            var tempPosition = currentBlock.GetPosition();
+            var tempPosition = currentPiece.GetPosition();
             for (int i = 0; i < 4; i++) {
                 playboard[tempPosition[i].GetPos().Item1, tempPosition[i].GetPos().Item2] = '█';
                 lineBlockCount[tempPosition[i].GetPos().Item1]++;
             }
-            CycleNextBlock();
-            if (CheckCollision("down", currentBlock.SimulatedBlockMove(-1)))
+            currentPiece = new TetrisBlock("I-block"); //TEMPORARY
+            if (CheckCollision("down", currentPiece.SimulatedBlockMove(-1)))
                 gameOver = true;
         }
 
@@ -137,15 +133,15 @@ namespace TetrisMain.Models {
         public void MoveTetrisBlock(string direction) {
             switch (direction) {
                 case "down":
-                    if (CheckCollision(direction,currentBlock.GetPosition()) == true)
+                    if (CheckCollision(direction,currentPiece.GetPosition()) == true)
                         PlaceBlock();
-                    else currentBlock.MoveTetrisBlock(direction);
+                    else currentPiece.MoveTetrisBlock(direction);
                     ClearLines();
                     break;
                 default:
-                    if (CheckCollision(direction,currentBlock.GetPosition()) == true) ;
+                    if (CheckCollision(direction,currentPiece.GetPosition()) == true) ;
                             //PlayStuckSound();
-                    else currentBlock.MoveTetrisBlock(direction);
+                    else currentPiece.MoveTetrisBlock(direction);
                     break;
             }
         }
@@ -153,8 +149,8 @@ namespace TetrisMain.Models {
             bool stuck = false;
             int checkLinesBelow = 0;
             while (stuck == false) {
-                if (CheckCollision("down", currentBlock.SimulatedBlockMove(checkLinesBelow))) {
-                    currentBlock.SkipMoveTetrisBlock(checkLinesBelow);
+                if (CheckCollision("down", currentPiece.SimulatedBlockMove(checkLinesBelow))) {
+                    currentPiece.SkipMoveTetrisBlock(checkLinesBelow);
                     PlaceBlock();
                     stuck = true;
                 }
@@ -178,10 +174,6 @@ namespace TetrisMain.Models {
             drawboard[6, 0] = ' '; drawboard[6, 1] = 'E'; drawboard[6, 2] = 'N'; drawboard[6, 3] = 'T'; drawboard[6, 4] = 'E'; drawboard[6, 5] = 'R'; drawboard[6, 6] = ' '; drawboard[6, 7] = 'T'; drawboard[6, 8] = 'O'; drawboard[6, 9] = ' ';
             drawboard[5, 0] = ' '; drawboard[5, 1] = 'R'; drawboard[5, 2] = 'E'; drawboard[5, 3] = 'T'; drawboard[5, 4] = 'U'; drawboard[5, 5] = 'R'; drawboard[5, 6] = 'N'; drawboard[5, 7] = ' '; drawboard[5, 8] = 'T'; drawboard[5, 9] = 'O';
             drawboard[4, 0] = ' '; drawboard[4, 1] = 'M'; drawboard[4, 2] = 'A'; drawboard[4, 3] = 'I'; drawboard[4, 4] = 'N'; drawboard[4, 5] = ' '; drawboard[4, 6] = 'M'; drawboard[4, 7] = 'E'; drawboard[4, 8] = 'N'; drawboard[4, 9] = 'U';
-        }
-        private void CycleNextBlock() {
-            currentBlock = nextBlock;
-            nextBlock = TetrisBlock.GetRandomBlock();
         }
     }
 }
