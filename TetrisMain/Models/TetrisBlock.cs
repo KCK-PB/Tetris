@@ -102,14 +102,10 @@ namespace TetrisMain.Models {
             for (var i = 0; i < 4; i++) tetrisBlock[i].MovePos("down", lines);
         }
 
-        // TODO change to work with substitute for Vector2Int
-        // Block types could be enums
-
         // By default Tuple<int,int> item1 is X-coordinate
         // By default Tuple<int,int> item2 is Y-coordinate
 
         public Tuple<int, int>[,] JLSTZ_OFFSET_DATA {get; private set;}
-
         public Tuple<int, int>[,] I_OFFSET_DATA {get; private set;}
         public Tuple<int, int>[,] O_OFFSET_DATA {get; private set;}
 
