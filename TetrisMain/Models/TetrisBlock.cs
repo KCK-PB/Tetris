@@ -123,5 +123,17 @@ namespace TetrisMain.Models {
             }
             return new TetrisBlock("unknown");
         }
+        public TetrisBlock GetClone() {
+            Square[] virtualBlocks = new Square[4];
+            for (var i = 0; i < 4; i++) {
+                Tuple<int, int> tempPos = tetrisBlock[i].GetPos();
+                virtualBlocks[i] = new Square(tempPos.Item1, tempPos.Item2);
+            }
+            TetrisBlock virtualTetrisBlock = new TetrisBlock("unknown");
+            for (var i = 0; i < 4; i++) {
+                virtualTetrisBlock.tetrisBlock[i]=virtualBlocks[i];
+            }
+            return virtualTetrisBlock;
+        }
     }
 }

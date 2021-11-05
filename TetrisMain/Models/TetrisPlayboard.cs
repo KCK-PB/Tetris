@@ -10,15 +10,27 @@ namespace TetrisMain.Models {
         Timers.Timer gameClock = null;
         private TetrisBlock currentBlock;
         private TetrisBlock nextBlock;
+        private TetrisBlock ghostPiece;
+        private int level;
         private static readonly TetrisPlayboard instance = new TetrisPlayboard();
+        private Settings settings;
+        private int clearedLines;
+        private static readonly int[] linesPerLevel = { 10, 30, 60, 70, 120, 180, 250, 330, 420, 520, 620, 720, 820, 920, 1020, 1120, 1220, 1320, 1420 };
+        //private static readonly int[] linesPerLevel = { 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 };
+        private int score;
+        private int highScore;
+
 
         private TetrisPlayboard() {
+            settings = Settings.GetSettings();
             playboard = new char[24, 10];
             drawboard = new char[24, 10];
             lineBlockCount = new int[24];
+            clearedLines = 0;
             gameInProgress = false;
             gameOver = false;
             gameClock = new Timers.Timer(this);
+            level = settings.startingLevel;
             for (var i = 0; i < 24; i++)
                 for (var j = 0; j < 10; j++) {
                     playboard[i, j] = ' ';
@@ -26,30 +38,18 @@ namespace TetrisMain.Models {
                 }
             currentBlock = TetrisBlock.GetRandomBlock();
             nextBlock = TetrisBlock.GetRandomBlock();
-            //TEMPORARY
-            lineBlockCount[0] = 8;
-            for (int i = 0; i < 10; i++) {
-                if (i == 4 || i == 5)
-                    continue;
-                playboard[0, i] = '█';
-            }
-
-            lineBlockCount[3] = 8;
-            for (int i = 0; i < 10; i++) {
-                if (i == 4 || i == 5)
-                    continue;
-                playboard[3, i] = '█';
-            }
-
-            lineBlockCount[6] = 8;
-            for (int i = 0; i < 10; i++) {
-                if (i == 4 || i == 5)
-                    continue;
-                playboard[6, i] = '█';
-            }
-            //TEMPORARY END
+            if (settings.wantsGhostPiece == true)
+                UpdateGhostPiece();
         }
-
+        public int GetLevel() {
+            return level;
+        }
+        private void LevelUp() {
+            if (level >= 20)
+                return;
+            level++;
+            gameClock.LevelUpTimer();
+        }
         public static TetrisPlayboard GetInstance() {
             return instance;
         }
@@ -74,11 +74,16 @@ namespace TetrisMain.Models {
             for (var i = 0; i < 24; i++)
                 for (var j = 0; j < 10; j++)
                     drawboard[i, j] = playboard[i, j];
+            Square[] tempPosition;
+            if (settings.wantsGhostPiece == true) {
+                tempPosition = ghostPiece.GetPosition();//ghost piece render
+                for (var i = 0; i < 4; i++)
+                    drawboard[tempPosition[i].GetPos().Item1, tempPosition[i].GetPos().Item2] = '░';
+            }
 
-            var tempPosition = currentBlock.GetPosition();
-
+            tempPosition = currentBlock.GetPosition();//current block render
             for (var i = 0; i < 4; i++)
-                drawboard[tempPosition[i].GetPos().Item1, tempPosition[i].GetPos().Item2] = '█'; //■
+                drawboard[tempPosition[i].GetPos().Item1, tempPosition[i].GetPos().Item2] = '█';
         }
         public bool CheckCollision(string direction, Square[] tempPosition) {
             switch (direction) {
@@ -104,17 +109,14 @@ namespace TetrisMain.Models {
                 gameOver = true;
         }
 
-        private readonly string highScoreFile;
-        public int Score { get; private set; }
-        public int HighScore
-        {
-            get; private set;
-        }
 
         public void ClearLines() {
+            int tempClearedLines = 0;
             for (int i = 19; i >= 0; i--) {
                 if (lineBlockCount[i] == 10) //TO-DO add score count
                 {
+                    tempClearedLines++;
+                    clearedLines++;
                     for (int j = i; j < 23; j++) {
                         lineBlockCount[j] = lineBlockCount[j + 1];
                         for (int k = 0; k < 10; k++)
@@ -122,29 +124,51 @@ namespace TetrisMain.Models {
                     }
                 }
             }
+            if (settings.wantsGhostPiece==true)
+                UpdateGhostPiece();
+            switch (tempClearedLines) {
+                case 1:
+                    AddToScore(1);
+                    break;
+                case 2:
+                    AddToScore(2);
+                    break;
+                case 3:
+                    AddToScore(3);
+                    break;
+                case 4:
+                    AddToScore(4);
+                    break;
+                default:
+                    return;
+            }
+            if (clearedLines > linesPerLevel[level])
+                LevelUp();
         }
         private readonly int[] ScorePerLines = { 1, 40, 100, 300, 1200 };
-        /*public void AddToScore(int level, int line)
-        {
-            this.Score += ScorePerLines[line] * level;
-            if (this.Score > this.HighScore)
-            {
-                this.HighScore = this.Score;
+        public void AddToScore(int line) {
+            this.score += ScorePerLines[line] * level;
+            if (this.score > this.highScore) {
+                this.highScore = this.score;
             }
-        }*/
+        }
 
         public void MoveTetrisBlock(string direction) {
             switch (direction) {
                 case "down":
-                    if (CheckCollision(direction,currentBlock.GetPosition()) == true)
+                    if (CheckCollision(direction, currentBlock.GetPosition()) == true)
                         PlaceBlock();
                     else currentBlock.MoveTetrisBlock(direction);
                     ClearLines();
                     break;
                 default:
-                    if (CheckCollision(direction,currentBlock.GetPosition()) == true) ;
-                            //PlayStuckSound();
-                    else currentBlock.MoveTetrisBlock(direction);
+                    if (CheckCollision(direction, currentBlock.GetPosition()) == true) ;
+                    //PlayStuckSound();
+                    else {
+                        currentBlock.MoveTetrisBlock(direction);
+                        if (settings.wantsGhostPiece == true)
+                            UpdateGhostPiece();
+                    }
                     break;
             }
         }
@@ -159,6 +183,7 @@ namespace TetrisMain.Models {
                 }
                 else checkLinesBelow++;
             }
+            score += 5; //adding 5 score for faster,riskier gameplay
         }
         public void IsGameOver() {
             if (gameOver == true) {
@@ -181,6 +206,23 @@ namespace TetrisMain.Models {
         private void CycleNextBlock() {
             currentBlock = nextBlock;
             nextBlock = TetrisBlock.GetRandomBlock();
+            if (settings.wantsGhostPiece == true)
+                UpdateGhostPiece();
+        }
+        private void UpdateGhostPiece() {
+            ghostPiece = currentBlock.GetClone();
+            bool stuck = false;
+            int checkLinesBelow = 0;
+            while (stuck == false) {
+                if (CheckCollision("down", currentBlock.SimulatedBlockMove(checkLinesBelow))) {
+                    ghostPiece.SkipMoveTetrisBlock(checkLinesBelow);
+                    stuck = true;
+                }
+                else checkLinesBelow++;
+            }
+        }
+        private void GenerateAndPlaceRandomBlock(int number) {
+
         }
     }
 }
