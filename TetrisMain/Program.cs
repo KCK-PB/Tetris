@@ -31,6 +31,7 @@ namespace TetrisMain {
                 new Option("Exit", () => Environment.Exit(0)),
             };
             int index = 0;
+
             WriteMenu(options, options[index]);
             ConsoleKeyInfo keyinfo;
             do {
@@ -57,7 +58,7 @@ namespace TetrisMain {
         }
 
         static void WriteTemporaryMessage(string message) { //TO-DO make actual options for menu
-            Console.Clear();
+            //Console.Clear();
             Console.WriteLine(message);
             Thread.Sleep(3000);
             WriteMenu(options, options.Last());
@@ -92,10 +93,22 @@ namespace TetrisMain {
             }
         }
 
-
         static void WriteMenu(List<Option> options, Option selectedOption) {
             Console.Clear();
+            Console.Write(@"
 
+▄▄▄█████▓▓█████▄▄▄█████▓ ██▀███   ██▓  ██████ 
+▓  ██▒ ▓▒▓█   ▀▓  ██▒ ▓▒▓██ ▒ ██▒▓██▒▒██    ▒ 
+▒ ▓██░ ▒░▒███  ▒ ▓██░ ▒░▓██ ░▄█ ▒▒██▒░ ▓██▄   
+░ ▓██▓ ░ ▒▓█  ▄░ ▓██▓ ░ ▒██▀▀█▄  ░██░  ▒   ██▒
+  ▒██▒ ░ ░▒████▒ ▒██▒ ░ ░██▓ ▒██▒░██░▒██████▒▒
+  ▒ ░░   ░░ ▒░ ░ ▒ ░░   ░ ▒▓ ░▒▓░░▓  ▒ ▒▓▒ ▒ ░
+    ░     ░ ░  ░   ░      ░▒ ░ ▒░ ▒ ░░ ░▒  ░ ░
+  ░         ░    ░        ░░   ░  ▒ ░░  ░  ░  
+            ░  ░           ░      ░        ░  
+                                              
+
+");
             foreach (Option option in options) {
                 if (option == selectedOption) {
                     Console.Write("> ");
@@ -106,6 +119,18 @@ namespace TetrisMain {
 
                 Console.WriteLine(option.Name);
             }
+            Console.Write(@"       
+  ___ ____ ____ ____ ____ ____     ____
+||  |||  |||  |||  |||  |||  ||   ||  ||
+||__|||__|||__|||__|||__|||__||   ||  ||___
+|/__\|/__\|/__\|/__\|/__\|/__\|   ||__||___|
+ ____ ____ ____ ____ ____ ____     --------  ____ 
+||  |||  |||  |||  |||  |||  ||             ||  ||
+||__|||__|||__|||__|||__|||__||             ||__||
+|/__\|/__\|/__\|/__\|/__\|/__\|             |/__\|
+ ____ ____ ____ ____ ____ ____ ____ ____ ____ ___
+||  |||  |||  |||  |||  |||  |||  |||  ||   ||| 
+");
         }
     }
 
