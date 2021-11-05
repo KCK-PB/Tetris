@@ -66,7 +66,6 @@
 
         public bool CanTileMove(Tuple<int, int> endPosition)
         {
-
             if (!IsInBounds(endPosition))
             {
                 return false;

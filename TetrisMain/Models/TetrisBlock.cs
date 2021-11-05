@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 namespace TetrisMain.Models {
     public class TetrisBlock {
         private string type;
