@@ -6,10 +6,20 @@ using TetrisMain.Timers;
 using System.Media;
 using TetrisMain.Models;
 
+
 namespace TetrisMain {
+
     class Program {
         public static List<Option> options;
         static void Main(string[] args) {
+            ConsoleHelper.SetCurrentFont("Terminal",32);
+            Console.CursorVisible = false;
+            Console.SetWindowSize(1, 1);
+            Console.SetBufferSize(30, 30);
+            Console.SetWindowSize(50, 30);
+            ConsoleHelper.LockSize();
+            Console.Title = "TETRIS";
+
             bool ShowMenu = true;
             SoundPlayer player = new SoundPlayer { //TO-DO fix sound player
                 SoundLocation = "Simple Melody.wav"
@@ -53,14 +63,13 @@ namespace TetrisMain {
             WriteMenu(options, options.Last());
         }
         static void PrepareGame() {
-            //Console.Clear();
-            //Timers.Timer gameClock = new Timers.Timer();
+            bool showMenu = false;
             ConsoleKey keyPress;
             TetrisPlayboard playboard = TetrisPlayboard.GetInstance();
             playboard.StartGame();
-            while (playboard.IsGameInProgress()) {
+            while (showMenu == false) {
                 keyPress = Console.ReadKey(true).Key;
-                if(playboard.IsGameInProgress())
+                if (playboard.IsGameInProgress())
                     switch (keyPress) {
                         case ConsoleKey.LeftArrow:
                             playboard.MoveTetrisBlock("left");
@@ -77,7 +86,9 @@ namespace TetrisMain {
                     }
                 else if (keyPress == ConsoleKey.Enter) {
                     WriteMenu(options, options.First());
+                    showMenu = true;
                 }
+                else Console.Beep();
             }
         }
 

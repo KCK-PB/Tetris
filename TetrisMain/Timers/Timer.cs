@@ -26,7 +26,7 @@
             playboard.MoveTetrisBlock("down");
             playboard.DrawBoard();
             playboard.IsGameOver();
-            for (int i = 23; i >= 0; i--) {
+            for (int i = 19; i >= 0; i--) {
                 for (int j = 0; j < 10; j++) {
                     Console.Write(playboard.drawboard[i, j]);
                 }
