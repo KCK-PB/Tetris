@@ -13,11 +13,7 @@
         public Tuple<int, int> GetPos() {
             return new Tuple<int, int>(posx, posy);
         }
-        public Tuple<int, int> GetPosNormal()
-        {
-            return new Tuple<int, int>(GetPos().Item2, GetPos().Item1);
-        }
-
+        
         public void MovePos(string direction, int lines = 1) {
             //bottom=table[0][x] left=table[x][0] right=table[x][9] top=table[23][x]
             switch (direction) {
@@ -41,7 +37,7 @@
         // Center position is always tetrisBlock[0]
         public void RotateTile(Tuple<int, int> centerTile, bool clockwise)
         {
-            Tuple<int, int> relativePosition = new Tuple<int, int>((GetPosNormal().Item1 - centerTile.Item1), (GetPosNormal().Item2 - centerTile.Item2));
+            Tuple<int, int> relativePosition = new Tuple<int, int>((GetPos().Item1 - centerTile.Item1), (GetPos().Item2 - centerTile.Item2));
 
             // Setting rotation matrix according to the clockwise parameter
             Tuple<int, int>[] rotationMatrix = clockwise ? new Tuple<int, int>[2] { new Tuple<int, int>(0, -1), new Tuple<int, int>(1, 0) }
@@ -73,7 +69,6 @@
 
             if (!IsInBounds(endPosition))
             {
-
                 return false;
             }
             if (!IsPosEmpty(endPosition))
@@ -124,7 +119,7 @@
         // May be swapped for substitute
         public void MoveTile(Tuple<int, int> movement)
         {
-            Tuple<int, int> endPos = new(GetPosNormal().Item1 + movement.Item1, GetPosNormal().Item2 + movement.Item2);
+            Tuple<int, int> endPos = new(GetPos().Item1 + movement.Item1, GetPos().Item2 + movement.Item2);
             UpdatePosition(endPos);
         }
     }
