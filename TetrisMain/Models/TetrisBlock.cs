@@ -116,6 +116,7 @@ namespace TetrisMain.Models {
         public Tuple<int, int> coordinates;
 
         // Offset data
+        // May be declared as constants or on the start of the program
         private void SetOffsetData()
         {
             JLSTZ_OFFSET_DATA = new Tuple<int, int>[5,4];
@@ -247,7 +248,7 @@ namespace TetrisMain.Models {
             //gameObject.transform.position = newV3Pos;
         }
 
-        private bool Offset(int oldRotIndex, int newRotIndex)
+        private bool Offset(int oldRotationIndex, int newRotationIndex)
         {
             //Vector2Int offsetVal1, offsetVal2, endOffset;
             //Vector2Int[,] curOffsetData;
@@ -274,8 +275,8 @@ namespace TetrisMain.Models {
 
             for (int testIndex = 0; testIndex < 5; testIndex++)
             {
-                offsetVal1 = curOffsetData[testIndex, oldRotIndex];
-                offsetVal2 = curOffsetData[testIndex, newRotIndex];
+                offsetVal1 = curOffsetData[testIndex, oldRotationIndex];
+                offsetVal2 = curOffsetData[testIndex, newRotationIndex];
                 endOffset = Tuple.Create(offsetVal1.Item1 - offsetVal2.Item1, offsetVal1.Item2 - offsetVal2.Item2);
                 //endOffset = offsetVal1 - offsetVal2;
                 if (CanMovePiece(endOffset))
