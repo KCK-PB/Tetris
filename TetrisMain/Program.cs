@@ -190,6 +190,7 @@ namespace TetrisMain {
         static void PrepareGame() {
             bool showMenu = false;
             ConsoleKey keyPress;
+            Console.Clear();
             TetrisPlayboard playboard = TetrisPlayboard.GetInstance();
             GamePrinter = new GamePrinter(playboard.drawboard);
             playboard.RenderNextPiece();
@@ -221,7 +222,9 @@ namespace TetrisMain {
                     playboard.DrawBoard();
                     GamePrinter.PrintInExactPlace(playboard.drawboard);
                     if (keyPress == ConsoleKey.Enter) {
-                        WriteMenu(options, options.First());
+                        Console.Clear();
+                        WriteBorder();
+                        WriteMenu(options, options.First(), true);
                         showMenu = true;
                     }
                     else Console.Beep();
