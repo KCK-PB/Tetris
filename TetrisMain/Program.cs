@@ -79,7 +79,7 @@ namespace TetrisMain {
                             playboard.MoveTetrisBlock("right");
                             break;
                         case ConsoleKey.UpArrow:
-                            playboard.RotateTetrisBlock();
+                            playboard.RotateAndUpdate();
                             break;
                         case ConsoleKey.Spacebar:
                             playboard.InstantPlaceBlock();

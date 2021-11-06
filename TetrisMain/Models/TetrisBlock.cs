@@ -90,6 +90,9 @@ namespace TetrisMain.Models {
                 case "down":
                     for (var i = 0; i < 4; i++) tetrisBlock[i].MovePos("down");
                     break;
+                case "up":
+                    for (var i = 0; i < 4; i++) tetrisBlock[i].MovePos("up");
+                    break;
             }
         }
         public Square[] SimulatedBlockMove(int lines) {
@@ -182,6 +185,8 @@ namespace TetrisMain.Models {
         // May add tetris block type later
         public void RotateTetrisBlock(bool clockwise, bool shouldOffset)
         {
+            if (type == "O-block")
+                return;
             int oldRotationIndex = rotationIndex;
             rotationIndex += clockwise ? 1 : -1;
             rotationIndex = CalculateModulo(rotationIndex, 4);
@@ -194,17 +199,17 @@ namespace TetrisMain.Models {
             }
 
 
-            if (!shouldOffset)
-            {
-                return;
-            }
+            //if (!shouldOffset)
+            //{
+            //    return;
+            //}
 
-            bool canOffset = Offset(oldRotationIndex, rotationIndex);
+            //bool canOffset = true;//Offset(oldRotationIndex, rotationIndex);
 
-            if (!canOffset)
-            {
-                RotateTetrisBlock(!clockwise, false);
-            }
+            //if (!canOffset)
+            //{
+            //    RotateTetrisBlock(!clockwise, false);
+            //}
 
         }
 
@@ -341,6 +346,7 @@ namespace TetrisMain.Models {
             for (var i = 0; i < 4; i++) {
                 virtualTetrisBlock.tetrisBlock[i]=virtualBlocks[i];
             }
+            virtualTetrisBlock.type = type;
             return virtualTetrisBlock;
         }
     }

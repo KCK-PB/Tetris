@@ -28,6 +28,9 @@
                 case "down":
                     posx-=lines;
                     break;
+                case "up":
+                    posx += lines;
+                    break;
             }
         }
 

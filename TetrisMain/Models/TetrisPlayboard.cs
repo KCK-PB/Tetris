@@ -19,7 +19,7 @@ namespace TetrisMain.Models {
         //private static readonly int[] linesPerLevel = { 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 };
         private int score;
         private int highScore;
-
+        private char blockSymbol;
 
         private TetrisPlayboard() {
             settings = Settings.GetSettings();
@@ -36,8 +36,8 @@ namespace TetrisMain.Models {
                     playboard[i, j] = ' ';
                     drawboard[i, j] = ' ';
                 }
-            currentBlock = TetrisBlock.GetRandomBlock();
             nextBlock = TetrisBlock.GetRandomBlock();
+            CycleNextBlock();
             if (settings.wantsGhostPiece == true)
                 UpdateGhostPiece();
         }
@@ -65,8 +65,7 @@ namespace TetrisMain.Models {
             return gameInProgress;
         }
         public bool IsOccupied(int posx, int posy) {
-            if (posx < 0 || posy < 0 || posy > 9 || playboard[posx, posy] != ' ')
-            {
+            if (posx < 0 || posy < 0 || posy > 9 || playboard[posx, posy] != ' ') {
                 Console.WriteLine(posx + " " + posy);
 
                 return true;
@@ -88,7 +87,7 @@ namespace TetrisMain.Models {
 
             tempPosition = currentBlock.GetPosition();//current block render
             for (var i = 0; i < 4; i++)
-                drawboard[tempPosition[i].GetPos().Item1, tempPosition[i].GetPos().Item2] = '█';
+                drawboard[tempPosition[i].GetPos().Item1, tempPosition[i].GetPos().Item2] = blockSymbol;
         }
         public bool CheckCollision(string direction, Square[] tempPosition) {
             switch (direction) {
@@ -100,13 +99,16 @@ namespace TetrisMain.Models {
 
                 case "right":
                     return (IsOccupied(tempPosition[0].GetPos().Item1, tempPosition[0].GetPos().Item2 + 1) || IsOccupied(tempPosition[1].GetPos().Item1, tempPosition[1].GetPos().Item2 + 1) || IsOccupied(tempPosition[2].GetPos().Item1, tempPosition[2].GetPos().Item2 + 1) || IsOccupied(tempPosition[3].GetPos().Item1, tempPosition[3].GetPos().Item2 + 1));
+
+                case "here":
+                    return (IsOccupied(tempPosition[0].GetPos().Item1, tempPosition[0].GetPos().Item2) || IsOccupied(tempPosition[1].GetPos().Item1, tempPosition[1].GetPos().Item2) || IsOccupied(tempPosition[2].GetPos().Item1, tempPosition[2].GetPos().Item2) || IsOccupied(tempPosition[3].GetPos().Item1, tempPosition[3].GetPos().Item2));
             }
             return false;
         }
         public void PlaceBlock() {
             var tempPosition = currentBlock.GetPosition();
             for (int i = 0; i < 4; i++) {
-                playboard[tempPosition[i].GetPos().Item1, tempPosition[i].GetPos().Item2] = '█';
+                playboard[tempPosition[i].GetPos().Item1, tempPosition[i].GetPos().Item2] = blockSymbol;
                 lineBlockCount[tempPosition[i].GetPos().Item1]++;
             }
             CycleNextBlock();
@@ -129,7 +131,7 @@ namespace TetrisMain.Models {
                     }
                 }
             }
-            if (settings.wantsGhostPiece==true)
+            if (settings.wantsGhostPiece == true)
                 UpdateGhostPiece();
             switch (tempClearedLines) {
                 case 1:
@@ -157,11 +159,93 @@ namespace TetrisMain.Models {
                 this.highScore = this.score;
             }
         }
-
-        public void RotateTetrisBlock()
-        {
-            currentPiece.SetOffsetData();
-            currentPiece.RotateTetrisBlock(true, true);
+        public void RotateAndUpdate() {
+            lock (this) {
+                RotateTetrisBlock();
+                if (settings.wantsGhostPiece == true)
+                    UpdateGhostPiece();
+            }
+        }
+        private void RotateTetrisBlock() {
+            TetrisBlock blockClone = currentBlock.GetClone();
+            blockClone.RotateTetrisBlock(true, true);
+            TetrisBlock rotatedClone = blockClone.GetClone();
+            if (CheckCollision("here", blockClone.GetPosition())) {
+                if (blockClone.GetBlockType().Equals("I-block")) {
+                    blockClone.MoveTetrisBlock("up");
+                    if (CheckCollision("here", blockClone.GetPosition())) {
+                        blockClone.MoveTetrisBlock("up");
+                        if (CheckCollision("here", blockClone.GetPosition())) {
+                            blockClone = rotatedClone.GetClone();
+                        }
+                        else {
+                            currentBlock = blockClone.GetClone();
+                            return;
+                        }
+                    }
+                    else {
+                        currentBlock = blockClone.GetClone();
+                        return;
+                    }
+                    blockClone.MoveTetrisBlock("left");
+                    if (CheckCollision("here", blockClone.GetPosition())) {
+                        blockClone.MoveTetrisBlock("left");
+                        if (CheckCollision("here", blockClone.GetPosition())) {
+                            blockClone = rotatedClone.GetClone();
+                        }
+                        else {
+                            currentBlock = blockClone.GetClone();
+                            return;
+                        }
+                    }
+                    else {
+                        currentBlock = blockClone.GetClone();
+                        return;
+                    }
+                    blockClone.MoveTetrisBlock("right");
+                    if (CheckCollision("here", blockClone.GetPosition())) {
+                        blockClone.MoveTetrisBlock("right");
+                        if (CheckCollision("here", blockClone.GetPosition())) {
+                            blockClone = rotatedClone.GetClone();
+                        }
+                        else {
+                            currentBlock = blockClone.GetClone();
+                            return;
+                        }
+                    }
+                    else {
+                        currentBlock = blockClone.GetClone();
+                        return;
+                    }
+                }
+                else {
+                    blockClone.MoveTetrisBlock("up");
+                    if (CheckCollision("here", blockClone.GetPosition())) {
+                        blockClone = rotatedClone.GetClone();
+                    }
+                    else {
+                        currentBlock = blockClone.GetClone();
+                        return;
+                    }
+                    blockClone.MoveTetrisBlock("left");
+                    if (CheckCollision("here", blockClone.GetPosition())) {
+                        blockClone = rotatedClone.GetClone();
+                    }
+                    else {
+                        currentBlock = blockClone.GetClone();
+                        return;
+                    }
+                    blockClone.MoveTetrisBlock("right");
+                    if (CheckCollision("here", blockClone.GetPosition())) {
+                        blockClone = rotatedClone.GetClone();
+                    }
+                    else {
+                        currentBlock = blockClone.GetClone();
+                        return;
+                    }
+                }
+            }
+            currentBlock = blockClone.GetClone();
         }
 
         public void MoveTetrisBlock(string direction) {
@@ -173,14 +257,16 @@ namespace TetrisMain.Models {
                     ClearLines();
                     break;
                 default:
-                    if (CheckCollision(direction, currentBlock.GetPosition()) == true) ;
-                    //PlayStuckSound();
-                    else {
-                        currentBlock.MoveTetrisBlock(direction);
-                        if (settings.wantsGhostPiece == true)
-                            UpdateGhostPiece();
+                    lock (this) {
+                        if (CheckCollision(direction, currentBlock.GetPosition()) == true) ;
+                        //PlayStuckSound();
+                        else {
+                            currentBlock.MoveTetrisBlock(direction);
+                            if (settings.wantsGhostPiece == true)
+                                UpdateGhostPiece();
+                        }
+                        break;
                     }
-                    break;
             }
         }
         public void InstantPlaceBlock() {
@@ -217,6 +303,21 @@ namespace TetrisMain.Models {
         private void CycleNextBlock() {
             currentBlock = nextBlock;
             nextBlock = TetrisBlock.GetRandomBlock();
+            blockSymbol = '█';
+            if (currentBlock.GetBlockType() == "Z-block")
+                blockSymbol = 'Z';
+            else if (currentBlock.GetBlockType() == "J-block")
+                blockSymbol = 'J';
+            else if (currentBlock.GetBlockType() == "L-block")
+                blockSymbol = 'L';
+            else if (currentBlock.GetBlockType() == "T-block")
+                blockSymbol = 'T';
+            else if (currentBlock.GetBlockType() == "S-block")
+                blockSymbol = 'S';
+            else if (currentBlock.GetBlockType() == "I-block")
+                blockSymbol = 'I';
+            else if (currentBlock.GetBlockType() == "O-block")
+                blockSymbol = 'O';
             if (settings.wantsGhostPiece == true)
                 UpdateGhostPiece();
         }
