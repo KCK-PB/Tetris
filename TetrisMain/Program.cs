@@ -92,7 +92,8 @@ namespace TetrisMain {
                 else Console.Beep();
             }
         }
-
+        ConsoleColor[] colors = (ConsoleColor[])ConsoleColor.GetValues(typeof(ConsoleColor));
+        ConsoleColor currentForeground = Console.ForegroundColor;
         static void WriteMenu(List<Option> options, Option selectedOption) {
             Console.Clear();
             Console.Write(@"
