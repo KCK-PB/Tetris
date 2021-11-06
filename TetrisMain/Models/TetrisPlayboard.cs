@@ -15,8 +15,8 @@ namespace TetrisMain.Models {
         private static readonly TetrisPlayboard instance = new TetrisPlayboard();
         private Settings settings;
         private int clearedLines;
-        private static readonly int[] linesPerLevel = { 10, 30, 60, 70, 120, 180, 250, 330, 420, 520, 620, 720, 820, 920, 1020, 1120, 1220, 1320, 1420 };
-        //private static readonly int[] linesPerLevel = { 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 };
+        private static readonly int[] linesPerLevel = { 10, 30, 60, 70, 120, 180, 250, 330, 420, 520, 620, 720, 820, 920, 1020, 1120, 1220, 1320, 1420, 9999 };
+        //private static readonly int[] linesPerLevel = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20 };
         private int score;
         private int highScore;
         private char blockSymbol;
@@ -33,11 +33,12 @@ namespace TetrisMain.Models {
             level = settings.startingLevel;
             for (var i = 0; i < 24; i++)
                 for (var j = 0; j < 10; j++) {
-                    playboard[i, j] = ' ';
+                    playboard[i, j] = settings.wantsGrid;
                     drawboard[i, j] = ' ';
                 }
             nextBlock = TetrisBlock.GetRandomBlock();
-            CycleNextBlock();
+            currentBlock = TetrisBlock.GetRandomBlock();
+            blockSymbol = currentBlock.GetBlockType()[0];
             if (settings.wantsGhostPiece == true)
                 UpdateGhostPiece();
         }
@@ -49,6 +50,7 @@ namespace TetrisMain.Models {
                 return;
             level++;
             gameClock.LevelUpTimer();
+            RenderLevel();
         }
         public static TetrisPlayboard GetInstance() {
             return instance;
@@ -65,11 +67,8 @@ namespace TetrisMain.Models {
             return gameInProgress;
         }
         public bool IsOccupied(int posx, int posy) {
-            if (posx < 0 || posy < 0 || posy > 9 || playboard[posx, posy] != ' ') {
-                Console.WriteLine(posx + " " + posy);
-
+            if (posx < 0 || posy < 0 || posy > 9 || (playboard[posx, posy] != ' '&& playboard[posx, posy] != '.')) {
                 return true;
-
             }
             return false;
         }
@@ -116,11 +115,10 @@ namespace TetrisMain.Models {
                 gameOver = true;
         }
 
-
         public void ClearLines() {
             int tempClearedLines = 0;
             for (int i = 19; i >= 0; i--) {
-                if (lineBlockCount[i] == 10) //TO-DO add score count
+                if (lineBlockCount[i] == 10) 
                 {
                     tempClearedLines++;
                     clearedLines++;
@@ -131,8 +129,8 @@ namespace TetrisMain.Models {
                     }
                 }
             }
-            if (settings.wantsGhostPiece == true)
-                UpdateGhostPiece();
+            Render();
+            RenderLines();
             switch (tempClearedLines) {
                 case 1:
                     AddToScore(1);
@@ -149,7 +147,7 @@ namespace TetrisMain.Models {
                 default:
                     return;
             }
-            if (clearedLines > linesPerLevel[level])
+            while (clearedLines > linesPerLevel[level])
                 LevelUp();
         }
         private readonly int[] ScorePerLines = { 1, 40, 100, 300, 1200 };
@@ -157,13 +155,14 @@ namespace TetrisMain.Models {
             this.score += ScorePerLines[line] * level;
             if (this.score > this.highScore) {
                 this.highScore = this.score;
+                RenderScore("best");
             }
+            RenderScore("normal");
         }
         public void RotateAndUpdate() {
             lock (this) {
                 RotateTetrisBlock();
-                if (settings.wantsGhostPiece == true)
-                    UpdateGhostPiece();
+                Render();
             }
         }
         private void RotateTetrisBlock() {
@@ -245,6 +244,10 @@ namespace TetrisMain.Models {
                     }
                 }
             }
+            if (CheckCollision("here", blockClone.GetPosition())) {
+                //playStuckSound();
+                return;
+            }
             currentBlock = blockClone.GetClone();
         }
 
@@ -262,8 +265,7 @@ namespace TetrisMain.Models {
                         //PlayStuckSound();
                         else {
                             currentBlock.MoveTetrisBlock(direction);
-                            if (settings.wantsGhostPiece == true)
-                                UpdateGhostPiece();
+                            Render();
                         }
                         break;
                     }
@@ -280,29 +282,24 @@ namespace TetrisMain.Models {
                 }
                 else checkLinesBelow++;
             }
+            ClearLines();
             score += 5; //adding 5 score for faster,riskier gameplay
+            RenderScore("best");
+            RenderScore("normal");
         }
         public void IsGameOver() {
             if (gameOver == true) {
                 gameInProgress = false;
-                DrawGameOverScreen();
+                RenderGameOver();
                 StopGame();
                 //TO-DO display score etc.
             }
         }
-        private void DrawGameOverScreen() {
-            drawboard[15, 0] = ' '; drawboard[15, 1] = ' '; drawboard[15, 2] = ' '; drawboard[15, 3] = 'G'; drawboard[15, 4] = 'A'; drawboard[15, 5] = 'M'; drawboard[15, 6] = 'E'; drawboard[15, 7] = ' '; drawboard[15, 8] = ' '; drawboard[15, 9] = ' ';
-            drawboard[14, 0] = ' '; drawboard[14, 1] = ' '; drawboard[14, 2] = ' '; drawboard[14, 3] = 'O'; drawboard[14, 4] = 'V'; drawboard[14, 5] = 'E'; drawboard[14, 6] = 'R'; drawboard[14, 7] = ' '; drawboard[14, 8] = ' '; drawboard[14, 9] = ' ';
-            drawboard[12, 0] = ' '; drawboard[12, 1] = ' '; drawboard[12, 2] = 'S'; drawboard[12, 3] = 'C'; drawboard[12, 4] = 'O'; drawboard[12, 5] = 'R'; drawboard[12, 6] = 'E'; drawboard[12, 7] = ':'; drawboard[12, 8] = ' '; drawboard[12, 9] = ' ';
-            drawboard[11, 0] = ' '; drawboard[11, 1] = ' '; drawboard[11, 2] = '0'; drawboard[11, 3] = '0'; drawboard[11, 4] = '0'; drawboard[11, 5] = '0'; drawboard[11, 6] = '0'; drawboard[11, 7] = '0'; drawboard[11, 8] = ' '; drawboard[11, 9] = ' ';
-            drawboard[7, 0] = ' '; drawboard[7, 1] = 'P'; drawboard[7, 2] = 'R'; drawboard[7, 3] = 'E'; drawboard[7, 4] = 'S'; drawboard[7, 5] = 'S'; drawboard[7, 6] = ' '; drawboard[7, 7] = ' '; drawboard[7, 8] = ' '; drawboard[7, 9] = ' ';
-            drawboard[6, 0] = ' '; drawboard[6, 1] = 'E'; drawboard[6, 2] = 'N'; drawboard[6, 3] = 'T'; drawboard[6, 4] = 'E'; drawboard[6, 5] = 'R'; drawboard[6, 6] = ' '; drawboard[6, 7] = 'T'; drawboard[6, 8] = 'O'; drawboard[6, 9] = ' ';
-            drawboard[5, 0] = ' '; drawboard[5, 1] = 'R'; drawboard[5, 2] = 'E'; drawboard[5, 3] = 'T'; drawboard[5, 4] = 'U'; drawboard[5, 5] = 'R'; drawboard[5, 6] = 'N'; drawboard[5, 7] = ' '; drawboard[5, 8] = 'T'; drawboard[5, 9] = 'O';
-            drawboard[4, 0] = ' '; drawboard[4, 1] = 'M'; drawboard[4, 2] = 'A'; drawboard[4, 3] = 'I'; drawboard[4, 4] = 'N'; drawboard[4, 5] = ' '; drawboard[4, 6] = 'M'; drawboard[4, 7] = 'E'; drawboard[4, 8] = 'N'; drawboard[4, 9] = 'U';
-        }
         private void CycleNextBlock() {
             currentBlock = nextBlock;
             nextBlock = TetrisBlock.GetRandomBlock();
+            RenderNextPiece();
+            RenderBlockCount();
             blockSymbol = '█';
             if (currentBlock.GetBlockType() == "Z-block")
                 blockSymbol = 'Z';
@@ -335,6 +332,32 @@ namespace TetrisMain.Models {
         }
         private void GenerateAndPlaceRandomBlock(int number) {
 
+        }
+        private void Render() {
+            if (settings.wantsGhostPiece == true)
+                UpdateGhostPiece();
+            DrawBoard();
+            Program.GamePrinter.PrintInExactPlace(drawboard);
+        }
+        private void RenderScore(string which) {
+            if(which=="best") 
+                Program.GamePrinter.PrintScore(score, 4);
+            else Program.GamePrinter.PrintScore(score, 7);
+        }
+        private void RenderLevel() {
+            Program.GamePrinter.PrintLevel(level);
+        }
+        private void RenderLines() {
+            Program.GamePrinter.PrintLines(clearedLines);
+        }
+        private void RenderGameOver() {
+            Program.GamePrinter.PrintGameOver();
+        }
+        public void RenderNextPiece() {
+            Program.GamePrinter.PrintNextPiece(nextBlock.GetBlockType());
+        }
+        public void RenderBlockCount() {
+            Program.GamePrinter.PrintBlockCount(currentBlock.GetBlockType());
         }
     }
 }

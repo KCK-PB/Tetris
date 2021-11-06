@@ -11,6 +11,7 @@ namespace TetrisMain.Models {
         public bool wantsMusic;
         public bool wantsSFX;
         public bool wantsAlternativeColorPallete;
+        public char wantsGrid;
         public int startingLevel;
         public static Settings instance = new Settings();
         private Settings() {
@@ -19,6 +20,7 @@ namespace TetrisMain.Models {
             selectedGameMode = 1;
             wantsMusic = true;
             wantsSFX = true;
+            wantsGrid = ' ';
             wantsAlternativeColorPallete = false;
             startingLevel = 1;
     }

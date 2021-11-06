@@ -5,14 +5,14 @@ using System.Threading;
 using TetrisMain.Timers;
 using System.Media;
 using TetrisMain.Models;
+using TetrisMain.UI;
 
 
 namespace TetrisMain {
 
     class Program {
-
-        static void ConsoleDraw(IEnumerable<string> lines, int x, int y)
-        {
+        public static GamePrinter GamePrinter;
+        static void ConsoleDraw(IEnumerable<string> lines, int x, int y) {
             if (x > Console.WindowWidth) return;
             if (y > Console.WindowHeight) return;
 
@@ -26,23 +26,20 @@ namespace TetrisMain {
                 from line in lines
                 let currentIndex = index++
                 where currentIndex > 0 && currentIndex < Console.WindowHeight
-                select new
-                {
+                select new {
                     Text = new String(line.Skip(trimLeft).Take(Math.Min(Console.WindowWidth - x, line.Length - trimLeft)).ToArray()),
                     X = x,
                     Y = y++
                 };
 
             Console.Clear();
-            foreach (var line in linesToPrint)
-            {
+            foreach (var line in linesToPrint) {
                 Console.SetCursorPosition(line.X, line.Y);
-                Console.Write(line.Text);
+                Console.WriteLine(line.Text);
             }
         }
 
-        static void Exit()
-        {
+        static void Exit() {
             Console.CursorVisible = false;
 
             var arr = new[]
@@ -63,8 +60,7 @@ namespace TetrisMain {
 
             var maxLength = arr.Aggregate(0, (max, line) => Math.Max(max, line.Length));
             var x = Console.BufferWidth / 2 - maxLength / 2;
-            for (int y = -arr.Length; y < Console.WindowHeight + arr.Length; y++)
-            {
+            for (int y = -arr.Length; y < Console.WindowHeight + arr.Length; y++) {
                 ConsoleDraw(arr, x, y);
                 Thread.Sleep(100);
             }
@@ -72,10 +68,10 @@ namespace TetrisMain {
         }
         public static List<Option> options;
         static void Main(string[] args) {
-            ConsoleHelper.SetCurrentFont("Terminal",32);
+            ConsoleHelper.SetCurrentFont("Terminal", 32);
             Console.CursorVisible = false;
             Console.SetWindowSize(1, 1);
-            Console.SetBufferSize(30, 30);
+            Console.SetBufferSize(50, 30);
             Console.SetWindowSize(50, 30);
             ConsoleHelper.LockSize();
             Console.Title = "TETRIS";
@@ -113,8 +109,8 @@ namespace TetrisMain {
                     index = 0;
                 }
             }
-            while (ShowMenu==true);
-                Console.ReadKey();
+            while (ShowMenu == true);
+            Console.ReadKey();
         }
 
         static void WriteTemporaryMessage(string message) { //TO-DO make actual options for menu
@@ -127,8 +123,12 @@ namespace TetrisMain {
             bool showMenu = false;
             ConsoleKey keyPress;
             TetrisPlayboard playboard = TetrisPlayboard.GetInstance();
+            GamePrinter = new GamePrinter(playboard.drawboard);
+            playboard.RenderNextPiece();
+            playboard.RenderBlockCount();
+            GamePrinter.PrintInExactPlace(playboard.drawboard);
             playboard.StartGame();
-            
+
             while (showMenu == false) {
                 keyPress = Console.ReadKey(true).Key;
                 if (playboard.IsGameInProgress())
@@ -145,12 +145,20 @@ namespace TetrisMain {
                         case ConsoleKey.Spacebar:
                             playboard.InstantPlaceBlock();
                             break;
+                        case ConsoleKey.DownArrow:
+                            playboard.MoveTetrisBlock("down");
+                            break;
                     }
-                else if (keyPress == ConsoleKey.Enter) {
-                    WriteMenu(options, options.First());
-                    showMenu = true;
+                else {
+                    playboard.DrawBoard();
+                    GamePrinter.PrintInExactPlace(playboard.drawboard);
+                    if (keyPress == ConsoleKey.Enter) {
+                        WriteMenu(options, options.First());
+                        showMenu = true;
+                    }
+                    else Console.Beep();
                 }
-                else Console.Beep();
+                
             }
         }
         ConsoleColor[] colors = (ConsoleColor[])ConsoleColor.GetValues(typeof(ConsoleColor));
