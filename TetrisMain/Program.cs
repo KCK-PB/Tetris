@@ -76,6 +76,10 @@ namespace TetrisMain {
             ConsoleHelper.LockSize();
             Console.Title = "TETRIS";
 
+            var scoreboard = new Scoreboard("scoreboard.txt");
+            //scoreboard.AddToHighScoreFile(DateTime.Now, "JA", 250);
+            //scoreboard.AddToHighScoreFile(DateTime.Now, "JA", 250);
+
             bool ShowMenu = true;
             SoundPlayer player = new SoundPlayer { //TO-DO fix sound player
                 SoundLocation = "Simple Melody.wav"
@@ -84,12 +88,13 @@ namespace TetrisMain {
                 new Option("Start Game", () => PrepareGame()),
                 new Option("Game mode", () =>  WriteTemporaryMessage("Game mode")),
                 //new Option("Setting", () =>  ),
-                new Option("Scoreboard", () =>  WriteTemporaryMessage("Scoreboard")),
+                new Option("Scoreboard", () =>  WriteScoreboard(scoreboard.GetHighScoreList())),
                 new Option("Exit", () => Exit()),
             };
             int index = 0;
-
-            WriteMenu(options, options[index]);
+            //WriteLogo();
+            WriteBorder();
+            WriteMenu(options, options[index], true);
             ConsoleKeyInfo keyinfo;
             do {
                 keyinfo = Console.ReadKey(true);
@@ -116,10 +121,72 @@ namespace TetrisMain {
 
         static void WriteTemporaryMessage(string message) { //TO-DO make actual options for menu
             //Console.Clear();
+            CleanScreen();
+            Console.SetCursorPosition(5, 10);
+            Console.SetCursorPosition((Console.WindowWidth - message.Length)/ 2, Console.CursorTop);
             Console.WriteLine(message);
             Thread.Sleep(3000);
-            WriteMenu(options, options.Last());
+            CleanScreen();
+            WriteMenu(options, options.First(), true);
         }
+
+        static void WriteScoreboard(List<string> scoreLines)
+        {
+            const string title = "Scoreboard:";
+            const int maxCountOfLines = 12;
+            int startIndex = 0;
+            int index = startIndex;
+            ConsoleKeyInfo keyInfo = new ConsoleKeyInfo();
+            CleanScreen();
+            Console.SetCursorPosition(5, 7);
+            Console.SetCursorPosition(((Console.WindowWidth - title.Length) / 2) - 2, Console.CursorTop);
+            Console.WriteLine("Scoreboard:");
+            int i = 0;
+            for (; i <= maxCountOfLines; index++)
+            {
+                string currentLine = scoreLines[index];
+                Console.SetCursorPosition(5 + i, 9 + i);
+                Console.SetCursorPosition(((Console.WindowWidth - currentLine.Length) / 2) - 2, Console.CursorTop);
+                Console.WriteLine(currentLine);
+                i++;
+            }
+
+            do
+            {
+                if (scoreLines.Count < maxCountOfLines)
+                {
+                    Console.SetCursorPosition(5 + i, 7 + i);
+                    break;
+                }
+                
+                keyInfo = Console.ReadKey(true);
+
+                if (keyInfo.Key == ConsoleKey.DownArrow && startIndex < scoreLines.Count - maxCountOfLines - 1)
+                {
+                    string currentLine = scoreLines[index];
+                    Console.MoveBufferArea(6, 10, 34, 12, 6, 9);
+                    Console.SetCursorPosition(5 + i - 1, 9 + i - 1);
+                    Console.SetCursorPosition(((Console.WindowWidth - currentLine.Length) / 2) - 2, Console.CursorTop);
+                    Console.WriteLine(currentLine);
+                    index++;
+                    startIndex++;
+                }
+                else if (keyInfo.Key == ConsoleKey.UpArrow && startIndex > 0)
+                {
+                    string currentLine = scoreLines[startIndex - 1];
+                    Console.MoveBufferArea(6, 9, 34, 12, 6, 10);
+                    Console.SetCursorPosition(5, 9);
+                    Console.SetCursorPosition(((Console.WindowWidth - currentLine.Length) / 2) - 2, Console.CursorTop);
+                    Console.WriteLine(currentLine);
+                    startIndex--;
+                    index--;
+                }
+            }
+            while (keyInfo.Key != ConsoleKey.Escape);
+            CleanScreen();
+            WriteMenu(options, options.First(), true);
+        }
+
         static void PrepareGame() {
             bool showMenu = false;
             ConsoleKey keyPress;
@@ -164,7 +231,83 @@ namespace TetrisMain {
         }
         ConsoleColor[] colors = (ConsoleColor[])ConsoleColor.GetValues(typeof(ConsoleColor));
         ConsoleColor currentForeground = Console.ForegroundColor;
-        static void WriteMenu(List<Option> options, Option selectedOption) {
+
+        static void WriteBorder()
+        {
+            Console.Clear();
+            Console.Write(@"
+  ___ ____ ____ ____ ____ ____ ____ ____ ____     
+||  |||  |||  |||  |||  |||  |||  |||  |||  || 
+||__|||__|||__|||__|||__|||__|||__|||__|||__||  
+|/__\|/__\|/__\|/__\|/__\|/__\|/__\|/__\|/__\|
+ ___                                     ____ 
+||  ||                                  ||  ||
+||__||                                  ||__||
+|/__\|                                  |/__\|
+ ___                                     ____
+||  ||                                  ||  ||
+||__||                                  ||__||
+|/__\|                                  |/__\| 
+
+ ___                                     ____ 
+||  ||                                  ||  ||
+||__||                                  ||__||
+|/__\|                                  |/__\|
+  ___                                    ____ 
+||  ||                                  ||  ||
+||__||                                  ||__||
+|/__\|                                  |/__\|  
+  ___ ____ ____ ____ ____ ____ ____ ____ ____   
+||  |||  |||  |||  |||  |||  |||  |||  |||  ||  
+||__|||__|||__|||__|||__|||__|||__|||__|||__||   
+|/__\|/__\|/__\|/__\|/__\|/__\|/__\|/__\|/__\|
+
+        ");
+        }
+
+        static void CleanScreen()
+        {
+            //6,5 startpoint
+            //34,17 tyle trzeba wyczyscic
+            for(int x=6; x < 40; x++)
+            {
+                for(int y=5; y<22; y++)
+                {
+                    Console.SetCursorPosition(x, y);
+                    Console.Write(" ");
+                }
+            }
+
+            Console.SetCursorPosition(6, 5);
+        }
+
+        static void WriteMenu(List<Option> options, Option selectedOption, bool firstTimeRender = false)
+        {
+            int i = 0;
+            foreach (Option option in options) {
+                if (option == selectedOption) {
+                    Console.SetCursorPosition(18 , 10+i);
+                    Console.Write(">");
+                }
+                else {
+                    Console.SetCursorPosition(18, 10+i);
+                    Console.Write(" ");
+                }
+
+                if(firstTimeRender)
+                {
+                    Console.SetCursorPosition(5 + i, 10 + i);
+                    Console.SetCursorPosition((Console.WindowWidth - option.Name.Length) / 2, Console.CursorTop);
+                    Console.WriteLine(option.Name);
+                }
+                i++;
+                //Console.WriteLine();
+                
+            }
+        }
+
+        static void WriteLogo()
+        {
             Console.Clear();
             Console.Write(@"
   ___ ____ ____ ____ ____ ____ ____ ____ ____     
@@ -196,54 +339,9 @@ namespace TetrisMain {
   ");
             Thread.Sleep(10000);
             ConsoleHelper.SetCurrentFont("Consolas", 40);
-            Console.Clear(); 
-            Console.Write(@"
-  ___ ____ ____ ____ ____ ____ ____ ____ ____     
-||  |||  |||  |||  |||  |||  |||  |||  |||  || 
-||__|||__|||__|||__|||__|||__|||__|||__|||__||  
-|/__\|/__\|/__\|/__\|/__\|/__\|/__\|/__\|/__\|
- ___                                     ____ 
-||  ||                                  ||  ||
-||__||                                  ||__||
-|/__\|                                  |/__\|
- ___                                     ____
-||  ||                                  ||  ||
-||__||                                  ||__||
-|/__\|                                  |/__\| 
-
- ___                                    ____ 
-||  ||                                  ||  ||
-||__||                                  ||__||
-|/__\|                                  |/__\|
-  ___                                    ____ 
-||  ||                                  ||  ||
-||__||                                  ||__||
-|/__\|                                  |/__\|  
-  ___ ____ ____ ____ ____ ____ ____ ____ ____   
-||  |||  |||  |||  |||  |||  |||  |||  |||  ||  
-||__|||__|||__|||__|||__|||__|||__|||__|||__||   
-|/__\|/__\|/__\|/__\|/__\|/__\|/__\|/__\|/__\|
-
-        ");
-            int i = 0;
-            foreach (Option option in options) {
-                if (option == selectedOption) {
-                    Console.SetCursorPosition(5 , 10 + i);
-                    Console.Write("> ");
-                }
-                else {
-                    Console.Write(" ");
-                }
-                
-                Console.SetCursorPosition(5 + i, 10 + i);
-                Console.SetCursorPosition((Console.WindowWidth - option.Name.Length) / 2, Console.CursorTop);
-                Console.WriteLine(option.Name);
-                i++;
-                //Console.WriteLine();
-                
-            }
         }
     }
+
 
     public class Option {
         public string Name { get; }

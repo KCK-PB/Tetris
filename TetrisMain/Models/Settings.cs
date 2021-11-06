@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 
 namespace TetrisMain.Models {
     class Settings {
+        private readonly string SettingFile;
         public bool wantsGhostPiece;
         public int selectedGameMode;
         public bool wantsMusic;
