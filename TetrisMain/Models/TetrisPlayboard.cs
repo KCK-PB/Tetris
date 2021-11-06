@@ -179,6 +179,12 @@ namespace TetrisMain.Models {
             }
             RenderScore("normal");
         }
+
+        public int GetCurrentScore()
+        {
+            return this.score;
+        }
+
         public void RotateAndUpdate() {
             lock (this) {
                 RotateTetrisBlock();
