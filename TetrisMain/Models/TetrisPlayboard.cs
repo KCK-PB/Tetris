@@ -42,6 +42,7 @@ namespace TetrisMain.Models {
             nextBlock = TetrisBlock.GetRandomBlock();
             currentBlock = TetrisBlock.GetRandomBlock();
             blockSymbol = currentBlock.GetBlockType()[0];
+            highScore = Program.scoreboard.GetHighScore();
             if (settings.wantsGhostPiece == true)
                 UpdateGhostPiece();
         }
@@ -318,6 +319,8 @@ namespace TetrisMain.Models {
             }
             ClearLines();
             score += 5; //adding 5 score for faster,riskier gameplay
+            if (score > highScore)
+                highScore = score;
             RenderScore("best");
             RenderScore("normal");
         }
@@ -392,9 +395,9 @@ namespace TetrisMain.Models {
             DrawBoard();
             Program.GamePrinter.PrintInExactPlace(drawboard);
         }
-        private void RenderScore(string which) {
+        public void RenderScore(string which) {
             if(which=="best") 
-                Program.GamePrinter.PrintScore(score, 4);
+                Program.GamePrinter.PrintScore(highScore, 4);
             else Program.GamePrinter.PrintScore(score, 7);
         }
         private void RenderLevel() {

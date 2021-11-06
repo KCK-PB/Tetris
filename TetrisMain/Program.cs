@@ -201,6 +201,7 @@ namespace TetrisMain {
             GamePrinter = new GamePrinter(playboard.drawboard);
             playboard.RenderNextPiece();
             playboard.RenderBlockCount();
+            playboard.RenderScore("best");
             GamePrinter.PrintInExactPlace(playboard.drawboard);
             playboard.StartGame();
 
