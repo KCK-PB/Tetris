@@ -27,7 +27,7 @@
         }
         private static void OnTimedEvent(Object source, ElapsedEventArgs e) { // Main game clock event, temporary implementation to test console drawing
             lock (playboard) {
-                playboard.MoveTetrisBlock("down");
+                playboard.MoveTetrisBlock("down", playboard.GetBlock());
                 playboard.IsGameOver();
             }
         }

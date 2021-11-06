@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using TetrisMain.Models;
+using System.Threading;
 
 namespace TetrisMain.UI {
     public class GamePrinter {
@@ -15,7 +17,7 @@ namespace TetrisMain.UI {
         private char[][] Game;
         private char[,] drawboard;
         private int[] blockCount = { 0, 0, 0, 0, 0, 0, 0 };
-        private Models.Settings settings = Models.Settings.GetSettings();
+        private Settings settings = Settings.GetSettings();
         private Object printerBlocker = new Object();
         public GamePrinter(char[,] _drawboard) {
             drawboard = _drawboard;
@@ -525,6 +527,45 @@ namespace TetrisMain.UI {
             WriteInColor(tempColors[6], "████");
             Console.SetCursorPosition(4, 27);
             WriteInColor(tempColors[6], "");
+        }
+        public void PrintBlockRushAnimation(TetrisBlock positions) {
+            lock (printerBlocker) {
+                foreach(Square coords in positions.GetPosition()) {
+                    Console.SetCursorPosition(coords.GetPos().Item2 + 20, -1*coords.GetPos().Item1 + 26);
+                    WriteInColor(ConsoleColor.Gray, "`");
+                }
+                Thread.Sleep(40);
+                foreach (Square coords in positions.GetPosition()) {
+                    Console.SetCursorPosition(coords.GetPos().Item2 + 20, -coords.GetPos().Item1 + 26);
+                    WriteInColor(ConsoleColor.Gray, "*");
+                }
+                Thread.Sleep(40);
+                foreach (Square coords in positions.GetPosition()) {
+                    Console.SetCursorPosition(coords.GetPos().Item2 + 20, -coords.GetPos().Item1 + 26);
+                    WriteInColor(ConsoleColor.Gray, "+");
+                }
+                Thread.Sleep(40);
+                foreach (Square coords in positions.GetPosition()) {
+                    Console.SetCursorPosition(coords.GetPos().Item2 + 20, -coords.GetPos().Item1 + 26);
+                    WriteInColor(ConsoleColor.Gray, "#");
+                }
+                Thread.Sleep(40);
+                foreach (Square coords in positions.GetPosition()) {
+                    Console.SetCursorPosition(coords.GetPos().Item2 + 20, -coords.GetPos().Item1 + 26);
+                    WriteInColor(ConsoleColor.Gray, "░");
+                }
+                Thread.Sleep(40);
+                foreach (Square coords in positions.GetPosition()) {
+                    Console.SetCursorPosition(coords.GetPos().Item2 + 20, -coords.GetPos().Item1 + 26);
+                    WriteInColor(ConsoleColor.Gray, "▓");
+                }
+                Thread.Sleep(40);
+                foreach (Square coords in positions.GetPosition()) {
+                    Console.SetCursorPosition(coords.GetPos().Item2 + 20, -coords.GetPos().Item1 + 26);
+                    WriteInColor(ConsoleColor.Gray, "█");
+                }
+            }
+            
         }
     }
 }

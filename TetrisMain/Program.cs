@@ -71,7 +71,7 @@ namespace TetrisMain {
             ConsoleHelper.SetCurrentFont("Terminal", 32);
             Console.CursorVisible = false;
             Console.SetWindowSize(1, 1);
-            Console.SetBufferSize(50, 30);
+            Console.SetBufferSize(30, 30);
             Console.SetWindowSize(50, 30);
             ConsoleHelper.LockSize();
             Console.Title = "TETRIS";
@@ -123,6 +123,7 @@ namespace TetrisMain {
             bool showMenu = false;
             ConsoleKey keyPress;
             TetrisPlayboard playboard = TetrisPlayboard.GetInstance();
+            playboard=playboard.Reset();
             GamePrinter = new GamePrinter(playboard.drawboard);
             playboard.RenderNextPiece();
             playboard.RenderBlockCount();
@@ -134,19 +135,19 @@ namespace TetrisMain {
                 if (playboard.IsGameInProgress())
                     switch (keyPress) {
                         case ConsoleKey.LeftArrow:
-                            playboard.MoveTetrisBlock("left");
+                            playboard.MoveTetrisBlock("left",playboard.GetBlock());
                             break;
                         case ConsoleKey.RightArrow:
-                            playboard.MoveTetrisBlock("right");
+                            playboard.MoveTetrisBlock("right", playboard.GetBlock());
                             break;
                         case ConsoleKey.UpArrow:
                             playboard.RotateAndUpdate();
                             break;
                         case ConsoleKey.Spacebar:
-                            playboard.InstantPlaceBlock();
+                            playboard.InstantPlaceBlock(playboard.GetBlock());
                             break;
                         case ConsoleKey.DownArrow:
-                            playboard.MoveTetrisBlock("down");
+                            playboard.MoveTetrisBlock("down", playboard.GetBlock());
                             break;
                     }
                 else {
