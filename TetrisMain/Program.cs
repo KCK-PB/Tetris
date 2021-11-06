@@ -12,6 +12,7 @@ namespace TetrisMain {
 
     class Program {
         public static GamePrinter GamePrinter;
+        public static readonly Scoreboard scoreboard = new Scoreboard("scoreboard.txt");
         static void ConsoleDraw(IEnumerable<string> lines, int x, int y) {
             if (x > Console.WindowWidth) return;
             if (y > Console.WindowHeight) return;
@@ -76,7 +77,6 @@ namespace TetrisMain {
             ConsoleHelper.LockSize();
             Console.Title = "TETRIS";
 
-            var scoreboard = new Scoreboard("scoreboard.txt");
             //scoreboard.AddToHighScoreFile(DateTime.Now, "JA", 250);
             //scoreboard.AddToHighScoreFile(DateTime.Now, "JA", 250);
 
@@ -132,6 +132,8 @@ namespace TetrisMain {
 
         static void WriteScoreboard(List<string> scoreLines)
         {
+            if (scoreLines.Count == 0)
+                return;
             const string title = "Scoreboard:";
             const int maxCountOfLines = 12;
             int startIndex = 0;
@@ -144,6 +146,8 @@ namespace TetrisMain {
             int i = 0;
             for (; i <= maxCountOfLines; index++)
             {
+                if (index >= scoreLines.Count)
+                    break;
                 string currentLine = scoreLines[index];
                 Console.SetCursorPosition(5 + i, 9 + i);
                 Console.SetCursorPosition(((Console.WindowWidth - currentLine.Length) / 2) - 2, Console.CursorTop);
@@ -156,6 +160,7 @@ namespace TetrisMain {
                 if (scoreLines.Count < maxCountOfLines)
                 {
                     Console.SetCursorPosition(5 + i, 7 + i);
+                    Console.ReadKey();
                     break;
                 }
                 
@@ -223,6 +228,7 @@ namespace TetrisMain {
                     GamePrinter.PrintInExactPlace(playboard.drawboard);
                     if (keyPress == ConsoleKey.Enter) {
                         Console.Clear();
+                        scoreboard.AddToHighScoreFile(DateTime.Now, Environment.UserName, playboard.GetCurrentScore());
                         WriteBorder();
                         WriteMenu(options, options.First(), true);
                         showMenu = true;

@@ -20,7 +20,7 @@ namespace TetrisMain.Models
         {
             File.AppendAllLines(this._highScoreFile, new List<string>
                         {
-                            $"[{date}] {userName} => {score}"
+                            $"[{date.ToShortDateString()}] {userName} => {score}"
                         });
         }
 
