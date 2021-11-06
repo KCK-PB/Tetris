@@ -83,7 +83,7 @@ namespace TetrisMain {
             options = new List<Option>{
                 new Option("Start Game", () => PrepareGame()),
                 new Option("Game mode", () =>  WriteTemporaryMessage("Game mode")),
-                new Option("Setting", () =>  WriteTemporaryMessage("Setting")),
+                //new Option("Setting", () =>  ),
                 new Option("Scoreboard", () =>  WriteTemporaryMessage("Scoreboard")),
                 new Option("Exit", () => Exit()),
             };
@@ -166,38 +166,38 @@ namespace TetrisMain {
         ConsoleColor currentForeground = Console.ForegroundColor;
         static void WriteMenu(List<Option> options, Option selectedOption) {
             Console.Clear();
-          /*Console.Write(@"
-    ___ ____ ____ ____ ____ ____ ____ ____ ____     
-  ||  |||  |||  |||  |||  |||  |||  |||  |||  || 
-  ||__|||__|||__|||__|||__|||__|||__|||__|||__||  
-  |/__\|/__\|/__\|/__\|/__\|/__\|/__\|/__\|/__\|
-   ___                                     ____ 
-  ||  ||                                  ||  ||
-  ||__||                                  ||__||
-  |/__\|                                  |/__\|
-   ___                                     ____
-  ||  || ███████╗█████╗█████╗████╗█╗████╗ ||  ||
-  ||__|| ╚═█╔══╝█╔═══╝╚═█╔═╝█╔══█║█║█╔══╝ ||__||
-  |/__\|   █║   ████╗   █║  █████╝█║████╗ |/__\| 
-           █║   █╔══╝   █║  █╔══█╗█║╚══█║
-   ___     █║   █████╗  █║  █║  █║█║████║  ____ 
-  ||  ||   ╚╝   ╚════╝  ╚╝  ╚╝  ╚╝╚╝╚═══╝ ||  ||
-  ||__||                                  ||__||
-  |/__\|                                  |/__\|
-    ___                                    ____ 
-  ||  ||                                  ||  ||
-  ||__||                                  ||__||
-  |/__\|                                  |/__\|  
-    ___ ____ ____ ____ ____ ____ ____ ____ ____   
-  ||  |||  |||  |||  |||  |||  |||  |||  |||  ||  
-  ||__|||__|||__|||__|||__|||__|||__|||__|||__||   
-  |/__\|/__\|/__\|/__\|/__\|/__\|/__\|/__\|/__\|
+            Console.Write(@"
+  ___ ____ ____ ____ ____ ____ ____ ____ ____     
+||  |||  |||  |||  |||  |||  |||  |||  |||  || 
+||__|||__|||__|||__|||__|||__|||__|||__|||__||  
+|/__\|/__\|/__\|/__\|/__\|/__\|/__\|/__\|/__\|
+ ___                                     ____ 
+||  ||                                  ||  ||
+||__||                                  ||__||
+|/__\|                                  |/__\|
+ ___                                     ____
+||  || ███████╗█████╗█████╗████╗█╗████╗ ||  ||
+||__|| ╚═█╔══╝█╔═══╝╚═█╔═╝█╔══█║█║█╔══╝ ||__||
+|/__\|   █║   ████╗   █║  █████╝█║████╗ |/__\| 
+         █║   █╔══╝   █║  █╔══█╗█║╚══█║
+ ___     █║   █████╗  █║  █║  █║█║████║  ____ 
+||  ||   ╚╝   ╚════╝  ╚╝  ╚╝  ╚╝╚╝╚═══╝ ||  ||
+||__||                                  ||__||
+|/__\|                                  |/__\|
+ ___                                     ____ 
+||  ||                                  ||  ||
+||__||                                  ||__||
+|/__\|                                  |/__\|  
+  ___ ____ ____ ____ ____ ____ ____ ____ ____   
+||  |||  |||  |||  |||  |||  |||  |||  |||  ||  
+||__|||__|||__|||__|||__|||__|||__|||__|||__||   
+|/__\|/__\|/__\|/__\|/__\|/__\|/__\|/__\|/__\|
 
-");*/
-            //Thread.Sleep(10000);
-            //Console.Clear(); 
-
-                Console.Write(@"
+  ");
+            Thread.Sleep(10000);
+            ConsoleHelper.SetCurrentFont("Consolas", 40);
+            Console.Clear(); 
+            Console.Write(@"
   ___ ____ ____ ____ ____ ____ ____ ____ ____     
 ||  |||  |||  |||  |||  |||  |||  |||  |||  || 
 ||__|||__|||__|||__|||__|||__|||__|||__|||__||  
@@ -228,14 +228,14 @@ namespace TetrisMain {
             int i = 0;
             foreach (Option option in options) {
                 if (option == selectedOption) {
-                    
+                    Console.SetCursorPosition(5 , 10 + i);
                     Console.Write("> ");
                 }
                 else {
                     Console.Write(" ");
                 }
                 
-                Console.SetCursorPosition(10 + i, 10 + i);
+                Console.SetCursorPosition(5 + i, 10 + i);
                 Console.SetCursorPosition((Console.WindowWidth - option.Name.Length) / 2, Console.CursorTop);
                 Console.WriteLine(option.Name);
                 i++;
