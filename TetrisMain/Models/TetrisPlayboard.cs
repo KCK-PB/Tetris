@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Threading;
+using TetrisMain.UI;
 namespace TetrisMain.Models {
     public class TetrisPlayboard {
         private char[,] playboard;
@@ -22,7 +23,7 @@ namespace TetrisMain.Models {
         private int highScore;
         private char blockSymbol;
         private int blockRushCounter;
-        
+        JukeBox jukeBox = new JukeBox();
 
         private TetrisPlayboard() {
             settings = Settings.GetSettings();
@@ -150,15 +151,19 @@ namespace TetrisMain.Models {
             switch (tempClearedLines) {
                 case 1:
                     AddToScore(1);
+                    jukeBox.PlaySound(1, DateTime.Now.Ticks);
                     break;
                 case 2:
                     AddToScore(2);
+                    jukeBox.PlaySound(2, DateTime.Now.Ticks);
                     break;
                 case 3:
                     AddToScore(3);
+                    jukeBox.PlaySound(3, DateTime.Now.Ticks);
                     break;
                 case 4:
                     AddToScore(4);
+                    jukeBox.PlaySound(4, DateTime.Now.Ticks);
                     break;
                 default:
                     return;
@@ -272,7 +277,7 @@ namespace TetrisMain.Models {
                 }
             }
             if (CheckCollision("here", blockClone.GetPosition())) {
-                //playStuckSound();
+                jukeBox.PlaySound(5, DateTime.Now.Ticks);
                 return;
             }
             currentBlock = blockClone.GetClone();
@@ -288,8 +293,8 @@ namespace TetrisMain.Models {
                     break;
                 default:
                     lock (this) {
-                        if (CheckCollision(direction, blockToMove.GetPosition()) == true) ;
-                        //PlayStuckSound();
+                        if (CheckCollision(direction, blockToMove.GetPosition()) == true) 
+                            jukeBox.PlaySound(5, DateTime.Now.Ticks);
                         else {
                             blockToMove.MoveTetrisBlock(direction);
                             Render();
@@ -329,6 +334,7 @@ namespace TetrisMain.Models {
                 gameInProgress = false;
                 RenderGameOver();
                 StopGame();
+                jukeBox.PlayMusic(5);
                 //TO-DO display score etc.
             }
         }
@@ -386,7 +392,7 @@ namespace TetrisMain.Models {
                     MoveTetrisBlock("right", enemyBlock);
             }
             InstantPlaceBlock(enemyBlock);
-            //playblockrushspawnsound() WORMS TELEPORT.WAV SOUND
+            jukeBox.PlaySound(9, DateTime.Now.Ticks);
         }
 
         private void Render() {

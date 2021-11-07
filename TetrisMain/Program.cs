@@ -6,6 +6,8 @@ using TetrisMain.Timers;
 using System.Media;
 using TetrisMain.Models;
 using TetrisMain.UI;
+using System.Runtime.InteropServices;
+
 
 
 namespace TetrisMain {
@@ -69,6 +71,7 @@ namespace TetrisMain {
         }
         public static List<Option> options;
         static void Main(string[] args) {
+            
             ConsoleHelper.SetCurrentFont("Terminal", 32);
             Console.CursorVisible = false;
             Console.SetWindowSize(1, 1);
@@ -76,6 +79,7 @@ namespace TetrisMain {
             Console.SetWindowSize(50, 30);
             ConsoleHelper.LockSize();
             Console.Title = "TETRIS";
+            JukeBox jukeBox = new JukeBox();
 
             //scoreboard.AddToHighScoreFile(DateTime.Now, "JA", 250);
             //scoreboard.AddToHighScoreFile(DateTime.Now, "JA", 250);
@@ -96,16 +100,20 @@ namespace TetrisMain {
             WriteBorder();
             WriteMenu(options, options[index], true);
             ConsoleKeyInfo keyinfo;
+            jukeBox.PlayMusic(0);
             do {
+                
                 keyinfo = Console.ReadKey(true);
                 if (keyinfo.Key == ConsoleKey.DownArrow) {
                     if (index + 1 < options.Count) {
+                        jukeBox.PlaySound(7,DateTime.Now.Ticks);
                         index++;
                         WriteMenu(options, options[index]);
                     }
                 }
                 if (keyinfo.Key == ConsoleKey.UpArrow) {
                     if (index - 1 >= 0) {
+                        jukeBox.PlaySound(6, DateTime.Now.Ticks);
                         index--;
                         WriteMenu(options, options[index]);
                     }
