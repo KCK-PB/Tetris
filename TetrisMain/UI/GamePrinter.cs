@@ -213,107 +213,125 @@ namespace TetrisMain.UI {
 
             //Best & Score
             //border
-            Game[2][34] = '╔';
-            Game[2][43] = '╗';
-            Game[8][34] = '╚';
-            Game[8][43] = '╝';
+            Game[6][34] = '╔';
+            Game[6][43] = '╗';
+            Game[12][34] = '╚';
+            Game[12][43] = '╝';
 
             for (int scoreTopBottom = 35; scoreTopBottom < 43; scoreTopBottom++) {
-                Game[2][scoreTopBottom] = '═';
-                Game[8][scoreTopBottom] = '═';
+                Game[6][scoreTopBottom] = '═';
+                Game[12][scoreTopBottom] = '═';
             }
-            for (int scoreLetRight = 3; scoreLetRight < 8; scoreLetRight++) {
+            for (int scoreLetRight = 7; scoreLetRight < 12; scoreLetRight++) {
                 Game[scoreLetRight][34] = '║';
                 Game[scoreLetRight][43] = '║';
             }
 
-            Game[3][36] = 'B';
-            Game[3][37] = 'E';
-            Game[3][38] = 'S';
-            Game[3][39] = 'T';
+            Game[7][36] = 'B';
+            Game[7][37] = 'E';
+            Game[7][38] = 'S';
+            Game[7][39] = 'T';
 
-            Game[6][36] = 'S';
-            Game[6][37] = 'C';
-            Game[6][38] = 'O';
-            Game[6][39] = 'R';
-            Game[6][40] = 'E';
+            Game[10][36] = 'S';
+            Game[10][37] = 'C';
+            Game[10][38] = 'O';
+            Game[10][39] = 'R';
+            Game[10][40] = 'E';
 
             //Best & Score = 0000 when game start
             for (int scoreBest0 = 36; scoreBest0 < 42; scoreBest0++) {
-                Game[4][scoreBest0] = '0';
-                Game[7][scoreBest0] = '0';
+                Game[8][scoreBest0] = '0';
+                Game[11][scoreBest0] = '0';
             }
 
             //next block
-            Game[10][36] = 'N';
-            Game[10][37] = 'E';
-            Game[10][38] = 'X';
-            Game[10][39] = 'T';
+            Game[14][36] = 'N';
+            Game[14][37] = 'E';
+            Game[14][38] = 'X';
+            Game[14][39] = 'T';
 
-            Game[9][34] = '╔';
-            Game[9][41] = '╗';
-            Game[15][34] = '╚';
-            Game[15][41] = '╝';
+            Game[13][34] = '╔';
+            Game[13][41] = '╗';
+            Game[19][34] = '╚';
+            Game[19][41] = '╝';
 
             for (int nextTopBottom = 35; nextTopBottom < 41; nextTopBottom++) {
-                Game[9][nextTopBottom] = '═';
-                Game[15][nextTopBottom] = '═';
+                Game[13][nextTopBottom] = '═';
+                Game[19][nextTopBottom] = '═';
             }
-            for (int nextLeftRigth = 10; nextLeftRigth < 15; nextLeftRigth++) {
+            for (int nextLeftRigth = 14; nextLeftRigth < 19; nextLeftRigth++) {
                 Game[nextLeftRigth][34] = '║';
                 Game[nextLeftRigth][41] = '║';
             }
 
             //Lines
-            Game[17][36] = 'L';
-            Game[17][37] = 'I';
-            Game[17][38] = 'N';
-            Game[17][39] = 'E';
-            Game[17][40] = 'S';
+            Game[21][36] = 'L';
+            Game[21][37] = 'I';
+            Game[21][38] = 'N';
+            Game[21][39] = 'E';
+            Game[21][40] = 'S';
 
             //Lines when game start
-            Game[18][37] = '0';
-            Game[18][38] = '0';
-            Game[18][39] = '0';
-            Game[18][40] = '0';
-
-            Game[16][34] = '╔';
-            Game[16][43] = '╗';
-            Game[19][34] = '╚';
-            Game[19][43] = '╝';
-
-            for (int linesTopBottom = 35; linesTopBottom < 43; linesTopBottom++) {
-                Game[16][linesTopBottom] = '═';
-                Game[19][linesTopBottom] = '═';
-            }
-            for (int linesLeftRigth = 17; linesLeftRigth < 19; linesLeftRigth++) {
-                Game[linesLeftRigth][34] = '║';
-                Game[linesLeftRigth][43] = '║';
-            }
-
-            //Level
-            Game[21][36] = 'L';
-            Game[21][37] = 'E';
-            Game[21][38] = 'V';
-            Game[21][39] = 'E';
-            Game[21][40] = 'L';
-
-            //Level when game start
+            Game[22][37] = '0';
             Game[22][38] = '0';
-            Game[22][39] = '1';
+            Game[22][39] = '0';
+            Game[22][40] = '0';
 
             Game[20][34] = '╔';
             Game[20][43] = '╗';
             Game[23][34] = '╚';
             Game[23][43] = '╝';
 
-            for (int levelTopBottom = 35; levelTopBottom < 43; levelTopBottom++) {
-                Game[20][levelTopBottom] = '═';
-                Game[23][levelTopBottom] = '═';
+            for (int linesTopBottom = 35; linesTopBottom < 43; linesTopBottom++) {
+                Game[20][linesTopBottom] = '═';
+                Game[23][linesTopBottom] = '═';
             }
-            for (int levelLeftRigth = 21; levelLeftRigth < 23; levelLeftRigth++) {
+            for (int linesLeftRigth = 21; linesLeftRigth < 23; linesLeftRigth++) {
+                Game[linesLeftRigth][34] = '║';
+                Game[linesLeftRigth][43] = '║';
+            }
+
+            //Level
+            Game[25][36] = 'L';
+            Game[25][37] = 'E';
+            Game[25][38] = 'V';
+            Game[25][39] = 'E';
+            Game[25][40] = 'L';
+
+            //Level when game start
+            Game[26][38] = '0';
+            Game[26][39] = '1';
+
+            Game[24][34] = '╔';
+            Game[24][43] = '╗';
+            Game[27][34] = '╚';
+            Game[27][43] = '╝';
+
+            for (int levelTopBottom = 35; levelTopBottom < 43; levelTopBottom++) {
+                Game[24][levelTopBottom] = '═';
+                Game[27][levelTopBottom] = '═';
+            }
+            for (int levelLeftRigth = 25; levelLeftRigth < 27; levelLeftRigth++) {
                 Game[levelLeftRigth][34] = '║';
                 Game[levelLeftRigth][43] = '║';
+            }
+
+            //Modes
+            //border
+            Game[1][34] = '╔';
+            Game[1][43] = '╗';
+            Game[5][34] = '╚';
+            Game[5][43] = '╝';
+
+            for (int modeTopBottom = 35; modeTopBottom < 43; modeTopBottom++)
+            {
+                Game[1][modeTopBottom] = '═';
+                Game[5][modeTopBottom] = '═';
+            }
+            for (int modeLetRight = 2; modeLetRight < 5; modeLetRight++)
+            {
+                Game[modeLetRight][34] = '║';
+                Game[modeLetRight][43] = '║';
             }
 
             int k = 0;
@@ -345,13 +363,38 @@ namespace TetrisMain.UI {
                     for (int j = 0; j < 10; j++) {
                         int drawI = i;
                         if (upsideDown)
-                            drawI*=-1;
+                            drawI *= -1;
                         Console.SetCursorPosition(j + 20, -drawI + startposition);
                         ConsoleColor tempColor = GetPieceColor(drawboard[i, j].ToString());
                         if (drawboard[i, j] >= 'A' && drawboard[i, j] <= 'Z')
                             drawboard[i, j] = '█';
                         WriteInColor(tempColor, drawboard[i, j].ToString());
                     }
+                }
+            }
+        }
+        public void PrintMode(int mode)
+        {
+            lock (printerBlocker)
+            {
+                if(mode == 1)
+                {
+                    Console.SetCursorPosition(36, 3);
+                    WriteInColor(ConsoleColor.Gray, "CLASSIC");
+                }
+                if (mode == 2)
+                {
+                    Console.SetCursorPosition(36, 3);
+                    WriteInColor(ConsoleColor.Gray, "BLOCK");
+                    Console.SetCursorPosition(36, 4);
+                    WriteInColor(ConsoleColor.Gray, "RUSH");
+                }
+                if (mode == 3)
+                {
+                    Console.SetCursorPosition(36, 3);
+                    WriteInColor(ConsoleColor.Gray, "GRAVITY GLITCH");
+                    Console.SetCursorPosition(36, 4);
+                    WriteInColor(ConsoleColor.Gray, "RUSH");
                 }
             }
         }
@@ -364,14 +407,14 @@ namespace TetrisMain.UI {
         }
         public void PrintLevel(int level) {
             lock (printerBlocker) {
-                Console.SetCursorPosition(38, 22);
+                Console.SetCursorPosition(38, 26);
                 string tempLevel = (level % 100).ToString("D2");
                 WriteInColor(ConsoleColor.Gray, tempLevel);
             }
         }
         public void PrintLines(int lines) {
             lock (printerBlocker) {
-                Console.SetCursorPosition(37, 18);
+                Console.SetCursorPosition(37, 22);
                 string tempLines = (lines % 10000).ToString("D4");
                 WriteInColor(ConsoleColor.Gray, tempLines);
             }
@@ -394,41 +437,41 @@ namespace TetrisMain.UI {
         public void PrintNextPiece(string type) {
             ConsoleColor tempColor = GetPieceColor(type);
             lock (printerBlocker) {
-                Console.SetCursorPosition(36, 12);
+                Console.SetCursorPosition(36, 16);
                 if (type == "I-block") {
                     WriteInColor(tempColor, "████");
-                    Console.SetCursorPosition(36, 13);
+                    Console.SetCursorPosition(36, 17);
                     WriteInColor(tempColor, "    ");
                 }
 
                 if (type == "J-block") {
                     WriteInColor(tempColor, "███ ");
-                    Console.SetCursorPosition(36, 13);
+                    Console.SetCursorPosition(36, 17);
                     WriteInColor(tempColor, "  █ ");
                 }
                 if (type == "O-block") {
                     WriteInColor(tempColor, "██  ");
-                    Console.SetCursorPosition(36, 13);
+                    Console.SetCursorPosition(36, 17);
                     WriteInColor(tempColor, "██  ");
                 }
                 if (type == "L-block") {
                     WriteInColor(tempColor, "███ ");
-                    Console.SetCursorPosition(36, 13);
+                    Console.SetCursorPosition(36, 17);
                     WriteInColor(tempColor, "█   ");
                 }
                 if (type == "Z-block") {
                     WriteInColor(tempColor, "██  ");
-                    Console.SetCursorPosition(36, 13);
+                    Console.SetCursorPosition(36, 17);
                     WriteInColor(tempColor, " ██ ");
                 }
                 if (type == "T-block") {
                     WriteInColor(tempColor, "███ ");
-                    Console.SetCursorPosition(36, 13);
+                    Console.SetCursorPosition(36, 17);
                     WriteInColor(tempColor, " █  ");
                 }
                 if (type == "S-block") {
                     WriteInColor(tempColor, " ██ ");
-                    Console.SetCursorPosition(36, 13);
+                    Console.SetCursorPosition(36, 17);
                     WriteInColor(tempColor, "██  ");
                 }
             }
