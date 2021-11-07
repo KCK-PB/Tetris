@@ -94,7 +94,6 @@ namespace TetrisMain
             };
             options = new List<Option>{
                 new Option("Start Game", () => PrepareGame()),
-                new Option("Game mode", () =>  WriteTemporaryMessage("Game mode")),
                 new Option("Setting", () => Settings()),
                 new Option("Scoreboard", () =>  WriteScoreboard(scoreboard.GetHighScoreList())),
                 new Option("Exit", () => Exit()),
@@ -128,6 +127,9 @@ namespace TetrisMain
                 }))),
                 new Option("Starting level", () => Write(
                     new List<(string, Action)>(Enumerable.Range(1,20).Select(x => (x.ToString(), new Action(() => Models.Settings.GetSettings().startingLevel = x)))
+                    ))),
+                                new Option("Game Mode", () => Write(
+                    new List<(string, Action)>(Enumerable.Range(1,3).Select(x => (x.ToString(), new Action(() => Models.Settings.GetSettings().selectedGameMode = x)))
                     ))),
                 new Option("Grid", () => Write(new List<(string, Action)>(new[]{
                     ("Yes", new Action(() => 
