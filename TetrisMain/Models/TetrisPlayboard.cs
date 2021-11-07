@@ -8,7 +8,7 @@ namespace TetrisMain.Models {
         private int[] lineBlockCount;
         private bool gameInProgress;
         private bool gameOver;
-        Timers.Timer gameClock = null;
+        public Timers.Timer gameClock = null;
         private TetrisBlock currentBlock;
         private TetrisBlock nextBlock;
         private TetrisBlock ghostPiece;
@@ -35,6 +35,7 @@ namespace TetrisMain.Models {
             gameOver = false;
             gameClock = new Timers.Timer(this);
             level = settings.startingLevel;
+            gameClock.LevelUpTimer();
             for (var i = 0; i < 24; i++)
                 for (var j = 0; j < 10; j++) {
                     playboard[i, j] = settings.wantsGrid;
@@ -395,7 +396,7 @@ namespace TetrisMain.Models {
             jukeBox.PlaySound(9, DateTime.Now.Ticks);
         }
 
-        private void Render() {
+        public void Render() {
             if (settings.wantsGhostPiece == true)
                 UpdateGhostPiece();
             DrawBoard();
@@ -406,7 +407,7 @@ namespace TetrisMain.Models {
                 Program.GamePrinter.PrintScore(highScore, 4);
             else Program.GamePrinter.PrintScore(score, 7);
         }
-        private void RenderLevel() {
+        public void RenderLevel() {
             Program.GamePrinter.PrintLevel(level);
         }
         private void RenderLines() {
