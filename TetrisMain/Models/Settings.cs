@@ -5,15 +5,17 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace TetrisMain.Models {
-    class Settings {
+    public class Settings 
+    {
         private readonly string SettingFile;
-        public bool wantsGhostPiece;
-        public int selectedGameMode;
-        public bool wantsMusic;
-        public bool wantsSFX;
-        public bool wantsAlternativeColorPallete;
-        public char wantsGrid;
-        public int startingLevel;
+
+        public bool wantsGhostPiece { get; set; }
+        public int selectedGameMode { get; set; }
+        public bool wantsMusic { get; set; }
+        public bool wantsSFX { get; set; }
+        public bool wantsAlternativeColorPallete { get; set; }
+        public char wantsGrid { get; set; }
+        public int startingLevel { get; set; }
         public static Settings instance = new Settings();
         private Settings() {
             //TO-DO load settings from file

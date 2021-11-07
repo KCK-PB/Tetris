@@ -8,12 +8,16 @@ using TetrisMain.Models;
 using TetrisMain.UI;
 
 
-namespace TetrisMain {
+namespace TetrisMain
+{
 
-    class Program {
+    class Program
+    {
+        public static int SelectedSettingIndex = 0;
         public static GamePrinter GamePrinter;
         public static readonly Scoreboard scoreboard = new Scoreboard("scoreboard.txt");
-        static void ConsoleDraw(IEnumerable<string> lines, int x, int y) {
+        static void ConsoleDraw(IEnumerable<string> lines, int x, int y)
+        {
             if (x > Console.WindowWidth) return;
             if (y > Console.WindowHeight) return;
 
@@ -27,20 +31,23 @@ namespace TetrisMain {
                 from line in lines
                 let currentIndex = index++
                 where currentIndex > 0 && currentIndex < Console.WindowHeight
-                select new {
+                select new
+                {
                     Text = new String(line.Skip(trimLeft).Take(Math.Min(Console.WindowWidth - x, line.Length - trimLeft)).ToArray()),
                     X = x,
                     Y = y++
                 };
 
             Console.Clear();
-            foreach (var line in linesToPrint) {
+            foreach (var line in linesToPrint)
+            {
                 Console.SetCursorPosition(line.X, line.Y);
                 Console.WriteLine(line.Text);
             }
         }
 
-        static void Exit() {
+        static void Exit()
+        {
             Console.CursorVisible = false;
 
             var arr = new[]
@@ -61,14 +68,17 @@ namespace TetrisMain {
 
             var maxLength = arr.Aggregate(0, (max, line) => Math.Max(max, line.Length));
             var x = Console.BufferWidth / 2 - maxLength / 2;
-            for (int y = -arr.Length; y < Console.WindowHeight + arr.Length; y++) {
+            for (int y = -arr.Length; y < Console.WindowHeight + arr.Length; y++)
+            {
                 ConsoleDraw(arr, x, y);
                 Thread.Sleep(100);
             }
             Environment.Exit(0);
         }
         public static List<Option> options;
-        static void Main(string[] args) {
+        public static List<Option> options_settings;
+        static void Main(string[] args)
+        {
             ConsoleHelper.SetCurrentFont("Terminal", 32);
             Console.CursorVisible = false;
             Console.SetWindowSize(1, 1);
@@ -77,40 +87,106 @@ namespace TetrisMain {
             ConsoleHelper.LockSize();
             Console.Title = "TETRIS";
 
-            //scoreboard.AddToHighScoreFile(DateTime.Now, "JA", 250);
-            //scoreboard.AddToHighScoreFile(DateTime.Now, "JA", 250);
-
             bool ShowMenu = true;
-            SoundPlayer player = new SoundPlayer { //TO-DO fix sound player
+            SoundPlayer player = new SoundPlayer
+            { //TO-DO fix sound player
                 SoundLocation = "Simple Melody.wav"
             };
             options = new List<Option>{
                 new Option("Start Game", () => PrepareGame()),
                 new Option("Game mode", () =>  WriteTemporaryMessage("Game mode")),
-                //new Option("Setting", () =>  ),
+                new Option("Setting", () => Settings()),
                 new Option("Scoreboard", () =>  WriteScoreboard(scoreboard.GetHighScoreList())),
                 new Option("Exit", () => Exit()),
             };
+            options_settings = new List<Option>
+            {
+                new Option("Alternate color pallete", () => Write(new List<(string, Action)>(
+                    new[]{
+                        ("Yes", new Action(
+                            () =>
+                            {
+                                Models.Settings.GetSettings().wantsAlternativeColorPallete = true; 
+                            })
+                        ),  
+                        ("No", new Action(
+                            () =>
+                            {
+                                Models.Settings.GetSettings().wantsAlternativeColorPallete = false;
+                            })
+                        ) 
+                    }))),
+                new Option("Ghost piece", () => Write(new List<(string, Action)>(new[]{
+                    ("Yes", new Action(() => 
+                    {
+                        Models.Settings.GetSettings().wantsGhostPiece = true;
+                    })),  
+                    ("No", new Action(() => 
+                    {
+                        Models.Settings.GetSettings().wantsGhostPiece = false;
+                    })) 
+                }))),
+                new Option("Starting level", () => Write(
+                    new List<(string, Action)>(Enumerable.Range(1,20).Select(x => (x.ToString(), new Action(() => Models.Settings.GetSettings().startingLevel = x)))
+                    ))),
+                new Option("Grid", () => Write(new List<(string, Action)>(new[]{
+                    ("Yes", new Action(() => 
+                    {
+                        Models.Settings.GetSettings().wantsGrid = ' ';
+                    })),
+                    ("No", new Action(() => 
+                    {
+                        Models.Settings.GetSettings().wantsGrid = ',';
+                    })) 
+                }))),
+                new Option("Music", () => Write(new List<(string, Action)>(new[]{
+                    ("Yes", new Action(() => 
+                    {
+                        Models.Settings.GetSettings().wantsMusic = true;
+                    })),
+                    ("No",new Action(() => 
+                    {
+                        Models.Settings.GetSettings().wantsMusic = false;
+                    })) 
+                }))),
+                new Option("Sounds", () => Write(new List<(string, Action)>(new[]{
+                    ("Yes", new Action(() => 
+                    {
+                        Models.Settings.GetSettings().wantsSFX = true;
+                    })),
+                    ("No",new Action(() => 
+                    {
+                        Models.Settings.GetSettings().wantsSFX = false;
+                    })) 
+                }))),
+            };
+
             int index = 0;
-            //WriteLogo();
+            WriteLogo();
             WriteBorder();
             WriteMenu(options, options[index], true);
             ConsoleKeyInfo keyinfo;
-            do {
+            do
+            {
                 keyinfo = Console.ReadKey(true);
-                if (keyinfo.Key == ConsoleKey.DownArrow) {
-                    if (index + 1 < options.Count) {
+                if (keyinfo.Key == ConsoleKey.DownArrow)
+                {
+                    if (index + 1 < options.Count)
+                    {
                         index++;
                         WriteMenu(options, options[index]);
                     }
                 }
-                if (keyinfo.Key == ConsoleKey.UpArrow) {
-                    if (index - 1 >= 0) {
+                if (keyinfo.Key == ConsoleKey.UpArrow)
+                {
+                    if (index - 1 >= 0)
+                    {
                         index--;
                         WriteMenu(options, options[index]);
                     }
                 }
-                if (keyinfo.Key == ConsoleKey.Enter) {
+                if (keyinfo.Key == ConsoleKey.Enter)
+                {
                     options[index].Selected.Invoke();
                     index = 0;
                 }
@@ -119,15 +195,99 @@ namespace TetrisMain {
             Console.ReadKey();
         }
 
-        static void WriteTemporaryMessage(string message) { //TO-DO make actual options for menu
+
+
+        static void WriteTemporaryMessage(string message)
+        { //TO-DO make actual options for menu
             //Console.Clear();
             CleanScreen();
             Console.SetCursorPosition(5, 10);
-            Console.SetCursorPosition((Console.WindowWidth - message.Length)/ 2, Console.CursorTop);
+            Console.SetCursorPosition((Console.WindowWidth - message.Length) / 2, Console.CursorTop);
             Console.WriteLine(message);
             Thread.Sleep(3000);
             CleanScreen();
             WriteMenu(options, options.First(), true);
+        }
+
+        static void WriteSettingOptions(List<(string key, Action action)> options, (string key, Action action) selectedOption, bool firstTimeRender = false)
+        {
+            int i = 0;
+            int secondCol = 0;
+
+            foreach (var option in options)
+            {
+                if (option == selectedOption)
+                {
+                    Console.SetCursorPosition(16+secondCol, 10 + i);
+                    Console.Write(">");
+                }
+                else
+                {
+                    Console.SetCursorPosition(16+secondCol, 10 + i);
+                    Console.Write(" ");
+                }
+
+                if (firstTimeRender)
+                {
+                    Console.SetCursorPosition(16 + i, 10 + i);
+                    Console.SetCursorPosition(18 + secondCol, Console.CursorTop);
+                    Console.WriteLine(option.key);
+                }
+
+                i++;
+                if (i >= 10 && secondCol == 0)
+                {
+                    secondCol = 10;
+                    i = 0;
+                }
+                //Console.WriteLine();
+
+            }
+        }
+
+        static void Write(List<(string key, Action action)> options)
+        { //TO-DO make actual options for menu
+            //Console.Clear();
+            CleanScreen();
+            Console.SetCursorPosition(5, 7);
+            Console.SetCursorPosition(((Console.WindowWidth - options_settings[SelectedSettingIndex].Name.Length) / 2) - 2, Console.CursorTop);
+            Console.WriteLine(options_settings[SelectedSettingIndex].Name);
+            int selectedValue = 0;
+
+            bool ShowMenu = true;
+            int index = 0;
+            ConsoleKeyInfo keyinfo;
+            WriteSettingOptions(options, options[index], true);
+            do
+            {
+                keyinfo = Console.ReadKey(true);
+                if (keyinfo.Key == ConsoleKey.DownArrow)
+                {
+                    if (index + 1 < options.Count)
+                    {
+                        index++;
+                        WriteSettingOptions(options, options[index]);
+                    }
+                }
+                if (keyinfo.Key == ConsoleKey.UpArrow)
+                {
+                    if (index - 1 >= 0)
+                    {
+                        index--;
+                        WriteSettingOptions(options, options[index]);
+                    }
+                }
+                if (keyinfo.Key == ConsoleKey.Enter)
+                {
+                    options[index].action();
+                    index = 0;
+                    ShowMenu = false;
+                }
+            }
+            while (ShowMenu == true);
+
+            CleanScreen();
+            WriteSettings(options_settings, options_settings.First(), true);
         }
 
         static void WriteScoreboard(List<string> scoreLines)
@@ -154,16 +314,15 @@ namespace TetrisMain {
                 Console.WriteLine(currentLine);
                 i++;
             }
-
             do
             {
                 if (scoreLines.Count < maxCountOfLines)
                 {
                     Console.SetCursorPosition(5 + i, 7 + i);
-                    Console.ReadKey();
+                    Console.ReadKey(true);
                     break;
                 }
-                
+
                 keyInfo = Console.ReadKey(true);
 
                 if (keyInfo.Key == ConsoleKey.DownArrow && startIndex < scoreLines.Count - maxCountOfLines - 1)
@@ -192,7 +351,8 @@ namespace TetrisMain {
             WriteMenu(options, options.First(), true);
         }
 
-        static void PrepareGame() {
+        static void PrepareGame()
+        {
             bool showMenu = false;
             ConsoleKey keyPress;
             Console.Clear();
@@ -205,10 +365,12 @@ namespace TetrisMain {
             GamePrinter.PrintInExactPlace(playboard.drawboard);
             playboard.StartGame();
 
-            while (showMenu == false) {
+            while (showMenu == false)
+            {
                 keyPress = Console.ReadKey(true).Key;
                 if (playboard.IsGameInProgress())
-                    switch (keyPress) {
+                    switch (keyPress)
+                    {
                         case ConsoleKey.LeftArrow:
                             playboard.MoveTetrisBlock("left",playboard.GetBlock());
                             break;
@@ -225,10 +387,12 @@ namespace TetrisMain {
                             playboard.MoveTetrisBlock("down", playboard.GetBlock());
                             break;
                     }
-                else {
+                else
+                {
                     playboard.DrawBoard();
                     GamePrinter.PrintInExactPlace(playboard.drawboard);
-                    if (keyPress == ConsoleKey.Enter) {
+                    if (keyPress == ConsoleKey.Enter)
+                    {
                         Console.Clear();
                         scoreboard.AddToHighScoreFile(DateTime.Now, Environment.UserName, playboard.GetCurrentScore());
                         WriteBorder();
@@ -237,7 +401,7 @@ namespace TetrisMain {
                     }
                     else Console.Beep();
                 }
-                
+
             }
         }
         ConsoleColor[] colors = (ConsoleColor[])ConsoleColor.GetValues(typeof(ConsoleColor));
@@ -280,9 +444,9 @@ namespace TetrisMain {
         {
             //6,5 startpoint
             //34,17 tyle trzeba wyczyscic
-            for(int x=6; x < 40; x++)
+            for (int x = 6; x < 40; x++)
             {
-                for(int y=5; y<22; y++)
+                for (int y = 5; y < 22; y++)
                 {
                     Console.SetCursorPosition(x, y);
                     Console.Write(" ");
@@ -295,17 +459,20 @@ namespace TetrisMain {
         static void WriteMenu(List<Option> options, Option selectedOption, bool firstTimeRender = false)
         {
             int i = 0;
-            foreach (Option option in options) {
-                if (option == selectedOption) {
-                    Console.SetCursorPosition(18 , 10+i);
+            foreach (Option option in options)
+            {
+                if (option == selectedOption)
+                {
+                    Console.SetCursorPosition(18, 10 + i);
                     Console.Write(">");
                 }
-                else {
-                    Console.SetCursorPosition(18, 10+i);
+                else
+                {
+                    Console.SetCursorPosition(18, 10 + i);
                     Console.Write(" ");
                 }
 
-                if(firstTimeRender)
+                if (firstTimeRender)
                 {
                     Console.SetCursorPosition(5 + i, 10 + i);
                     Console.SetCursorPosition((Console.WindowWidth - option.Name.Length) / 2, Console.CursorTop);
@@ -313,8 +480,85 @@ namespace TetrisMain {
                 }
                 i++;
                 //Console.WriteLine();
-                
+
             }
+        }
+
+        static void WriteSettings(List<Option> options_settings, Option selectedOption, bool firstTimeRender = false)
+        {
+            int i = 0;
+            foreach (Option option in options_settings)
+            {
+                if (option == selectedOption)
+                {
+                    Console.SetCursorPosition(7, 10 + i);
+                    Console.Write(">");
+                }
+                else
+                {
+                    Console.SetCursorPosition(7, 10 + i);
+                    Console.Write(" ");
+                }
+
+                if (firstTimeRender)
+                {
+                    Console.SetCursorPosition(7 + i, 10 + i);
+                    Console.SetCursorPosition((Console.WindowWidth - option.Name.Length) / 2, Console.CursorTop);
+                    Console.WriteLine(option.Name);
+                }
+                i++;
+                //Console.WriteLine();
+
+            }
+        }
+
+        static void Settings()
+        {
+            const string title = "Settings:";
+            CleanScreen();
+            Console.SetCursorPosition(10, 7);
+            Console.SetCursorPosition(((Console.WindowWidth - title.Length) / 2) - 2, Console.CursorTop);
+            Console.WriteLine("Settings:");
+            bool ShowMenu = true;
+
+            int index = 0;
+            ConsoleKeyInfo keyinfo;
+            WriteSettings(options_settings, options_settings.First(), true);
+            do
+            {
+                keyinfo = Console.ReadKey(true);
+                if (keyinfo.Key == ConsoleKey.DownArrow)
+                {
+                    if (index + 1 < options_settings.Count)
+                    {
+                        index++;
+                        WriteSettings(options_settings, options_settings[index]);
+                    }
+                }
+                if (keyinfo.Key == ConsoleKey.UpArrow)
+                {
+                    if (index - 1 >= 0)
+                    {
+                        index--;
+                        WriteSettings(options_settings, options_settings[index]);
+                    }
+                }
+                if (keyinfo.Key == ConsoleKey.Enter)
+                {
+                    SelectedSettingIndex = index;
+                    options_settings[index].Selected.Invoke();
+                    index = 0;
+                }
+                if (keyinfo.Key == ConsoleKey.Escape)
+                {
+                    CleanScreen();
+                    WriteMenu(options, options.First(), true);
+                    break;
+                }
+            }
+            while (ShowMenu == true);
+            Console.ReadKey();
+
         }
 
         static void WriteLogo()
@@ -348,17 +592,19 @@ namespace TetrisMain {
 |/__\|/__\|/__\|/__\|/__\|/__\|/__\|/__\|/__\|
 
   ");
-            Thread.Sleep(10000);
+            Thread.Sleep(1000);
             ConsoleHelper.SetCurrentFont("Consolas", 40);
         }
     }
 
 
-    public class Option {
+    public class Option
+    {
         public string Name { get; }
         public Action Selected { get; }
 
-        public Option(string name, Action selected) {
+        public Option(string name, Action selected)
+        {
             Name = name;
             Selected = selected;
         }
