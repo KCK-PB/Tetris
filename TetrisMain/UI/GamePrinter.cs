@@ -371,7 +371,7 @@ namespace TetrisMain.UI {
                         WriteInColor(tempColor, drawboard[i, j].ToString());
                     }
                 }
-                PrintMode(3);
+                PrintMode(settings.selectedGameMode);
             }
         }
         public void PrintMode(int mode)
