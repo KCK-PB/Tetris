@@ -371,6 +371,7 @@ namespace TetrisMain.UI {
                         WriteInColor(tempColor, drawboard[i, j].ToString());
                     }
                 }
+                PrintMode(3);
             }
         }
         public void PrintMode(int mode)
@@ -392,9 +393,9 @@ namespace TetrisMain.UI {
                 if (mode == 3)
                 {
                     Console.SetCursorPosition(36, 3);
-                    WriteInColor(ConsoleColor.Gray, "GRAVITY GLITCH");
+                    WriteInColor(ConsoleColor.Gray, "GRAVITY");
                     Console.SetCursorPosition(36, 4);
-                    WriteInColor(ConsoleColor.Gray, "RUSH");
+                    WriteInColor(ConsoleColor.Gray, "GLITCH");
                 }
             }
         }
