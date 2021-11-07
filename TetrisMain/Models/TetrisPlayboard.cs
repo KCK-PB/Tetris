@@ -334,7 +334,7 @@ namespace TetrisMain.Models {
                 gameInProgress = false;
                 RenderGameOver();
                 StopGame();
-                jukeBox.PlayMusic(5);
+                jukeBox.PlayMusicOnce(5);
                 //TO-DO display score etc.
             }
         }

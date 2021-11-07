@@ -47,5 +47,8 @@ namespace TetrisMain.UI {
         public void PlayMusic(int music) {
             this.music[music].PlayLooping();
         }
+        public void PlayMusicOnce(int music) {
+            this.music[music].Play();
+        }
     }
 }

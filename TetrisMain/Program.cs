@@ -355,6 +355,8 @@ namespace TetrisMain
 
         static void PrepareGame()
         {
+            JukeBox jukeBox = new JukeBox();
+            jukeBox.PlayMusic(Models.Settings.GetSettings().selectedGameMode);
             bool showMenu = false;
             ConsoleKey keyPress;
             Console.Clear();
@@ -401,7 +403,7 @@ namespace TetrisMain
                         WriteMenu(options, options.First(), true);
                         showMenu = true;
                     }
-                    else Console.Beep();
+
                 }
 
             }
@@ -413,7 +415,7 @@ namespace TetrisMain
         {
             Console.Clear();
             Console.Write(@"
-  ___ ____ ____ ____ ____ ____ ____ ____ ____     
+ ____ ____ ____ ____ ____ ____ ____ ____ ____     
 ||  |||  |||  |||  |||  |||  |||  |||  |||  || 
 ||__|||__|||__|||__|||__|||__|||__|||__|||__||  
 |/__\|/__\|/__\|/__\|/__\|/__\|/__\|/__\|/__\|
@@ -595,7 +597,7 @@ namespace TetrisMain
 
   ");
             Thread.Sleep(1000);
-            ConsoleHelper.SetCurrentFont("Consolas", 40);
+            ConsoleHelper.SetCurrentFont("Terminal", 32);
         }
     }
 
