@@ -13,6 +13,7 @@ namespace TetrisMain
 
     class Program
     {
+        public static int SelectedSettingIndex = 0;
         public static GamePrinter GamePrinter;
         public static readonly Scoreboard scoreboard = new Scoreboard("scoreboard.txt");
         static void ConsoleDraw(IEnumerable<string> lines, int x, int y)
@@ -98,15 +99,66 @@ namespace TetrisMain
                 new Option("Scoreboard", () =>  WriteScoreboard(scoreboard.GetHighScoreList())),
                 new Option("Exit", () => Exit()),
             };
-
             options_settings = new List<Option>
             {
-                new Option("Alternate color pallete:", () => WriteTemporaryMessage("Game mode")),
-                new Option("Ghost piece:", () => WriteTemporaryMessage("Game mode")),
-                new Option("Starting level:", () => WriteTemporaryMessage("Game mode")),
-                new Option("Grid:", () => WriteTemporaryMessage("Game mode")),
-                new Option("Music:", () => WriteTemporaryMessage("Game mode")),
-                new Option("Sounds:", () => WriteTemporaryMessage("Game mode")),
+                new Option("Alternate color pallete", () => Write(new List<(string, Action)>(
+                    new[]{
+                        ("Yes", new Action(
+                            () =>
+                            {
+                                Models.Settings.GetSettings().wantsAlternativeColorPallete = true; 
+                            })
+                        ),  
+                        ("No", new Action(
+                            () =>
+                            {
+                                Models.Settings.GetSettings().wantsAlternativeColorPallete = false;
+                            })
+                        ) 
+                    }))),
+                new Option("Ghost piece", () => Write(new List<(string, Action)>(new[]{
+                    ("Yes", new Action(() => 
+                    {
+                        Models.Settings.GetSettings().wantsGhostPiece = true;
+                    })),  
+                    ("No", new Action(() => 
+                    {
+                        Models.Settings.GetSettings().wantsGhostPiece = false;
+                    })) 
+                }))),
+                new Option("Starting level", () => Write(
+                    new List<(string, Action)>(Enumerable.Range(1,20).Select(x => (x.ToString(), new Action(() => Models.Settings.GetSettings().startingLevel = x)))
+                    ))),
+                new Option("Grid", () => Write(new List<(string, Action)>(new[]{
+                    ("Yes", new Action(() => 
+                    {
+                        Models.Settings.GetSettings().wantsGrid = ' ';
+                    })),
+                    ("No", new Action(() => 
+                    {
+                        Models.Settings.GetSettings().wantsGrid = ',';
+                    })) 
+                }))),
+                new Option("Music", () => Write(new List<(string, Action)>(new[]{
+                    ("Yes", new Action(() => 
+                    {
+                        Models.Settings.GetSettings().wantsMusic = true;
+                    })),
+                    ("No",new Action(() => 
+                    {
+                        Models.Settings.GetSettings().wantsMusic = false;
+                    })) 
+                }))),
+                new Option("Sounds", () => Write(new List<(string, Action)>(new[]{
+                    ("Yes", new Action(() => 
+                    {
+                        Models.Settings.GetSettings().wantsSFX = true;
+                    })),
+                    ("No",new Action(() => 
+                    {
+                        Models.Settings.GetSettings().wantsSFX = false;
+                    })) 
+                }))),
             };
 
             int index = 0;
@@ -157,6 +209,87 @@ namespace TetrisMain
             WriteMenu(options, options.First(), true);
         }
 
+        static void WriteSettingOptions(List<(string key, Action action)> options, (string key, Action action) selectedOption, bool firstTimeRender = false)
+        {
+            int i = 0;
+            int secondCol = 0;
+
+            foreach (var option in options)
+            {
+                if (option == selectedOption)
+                {
+                    Console.SetCursorPosition(16+secondCol, 10 + i);
+                    Console.Write(">");
+                }
+                else
+                {
+                    Console.SetCursorPosition(16+secondCol, 10 + i);
+                    Console.Write(" ");
+                }
+
+                if (firstTimeRender)
+                {
+                    Console.SetCursorPosition(16 + i, 10 + i);
+                    Console.SetCursorPosition(18 + secondCol, Console.CursorTop);
+                    Console.WriteLine(option.key);
+                }
+
+                i++;
+                if (i >= 10 && secondCol == 0)
+                {
+                    secondCol = 10;
+                    i = 0;
+                }
+                //Console.WriteLine();
+
+            }
+        }
+
+        static void Write(List<(string key, Action action)> options)
+        { //TO-DO make actual options for menu
+            //Console.Clear();
+            CleanScreen();
+            Console.SetCursorPosition(5, 7);
+            Console.SetCursorPosition(((Console.WindowWidth - options_settings[SelectedSettingIndex].Name.Length) / 2) - 2, Console.CursorTop);
+            Console.WriteLine(options_settings[SelectedSettingIndex].Name);
+            int selectedValue = 0;
+
+            bool ShowMenu = true;
+            int index = 0;
+            ConsoleKeyInfo keyinfo;
+            WriteSettingOptions(options, options[index], true);
+            do
+            {
+                keyinfo = Console.ReadKey(true);
+                if (keyinfo.Key == ConsoleKey.DownArrow)
+                {
+                    if (index + 1 < options.Count)
+                    {
+                        index++;
+                        WriteSettingOptions(options, options[index]);
+                    }
+                }
+                if (keyinfo.Key == ConsoleKey.UpArrow)
+                {
+                    if (index - 1 >= 0)
+                    {
+                        index--;
+                        WriteSettingOptions(options, options[index]);
+                    }
+                }
+                if (keyinfo.Key == ConsoleKey.Enter)
+                {
+                    options[index].action();
+                    index = 0;
+                    ShowMenu = false;
+                }
+            }
+            while (ShowMenu == true);
+
+            CleanScreen();
+            WriteSettings(options_settings, options_settings.First(), true);
+        }
+
         static void WriteScoreboard(List<string> scoreLines)
         {
             if (scoreLines.Count == 0)
@@ -186,7 +319,7 @@ namespace TetrisMain
                 if (scoreLines.Count < maxCountOfLines)
                 {
                     Console.SetCursorPosition(5 + i, 7 + i);
-                    Console.ReadKey();
+                    Console.ReadKey(true);
                     break;
                 }
 
@@ -412,8 +545,15 @@ namespace TetrisMain
                 }
                 if (keyinfo.Key == ConsoleKey.Enter)
                 {
+                    SelectedSettingIndex = index;
                     options_settings[index].Selected.Invoke();
                     index = 0;
+                }
+                if (keyinfo.Key == ConsoleKey.Escape)
+                {
+                    CleanScreen();
+                    WriteMenu(options, options.First(), true);
+                    break;
                 }
             }
             while (ShowMenu == true);
