@@ -335,11 +335,16 @@ namespace TetrisMain.UI {
 
         }
 
-        public void PrintInExactPlace(char[,] drawboard) {
+        public void PrintInExactPlace(char[,] drawboard, bool upsideDown = false) {
             lock (printerBlocker) {
+                int startposition = 26;
+                if (upsideDown)
+                    startposition = 7;
                 for (int i = 0; i < 20; i++) {
                     for (int j = 0; j < 10; j++) {
-                        Console.SetCursorPosition(j + 20, -i + 26);
+                        if (upsideDown)
+                            i*=-1;
+                        Console.SetCursorPosition(j + 20, -i + startposition);
                         ConsoleColor tempColor = GetPieceColor(drawboard[i, j].ToString());
                         if (drawboard[i, j] >= 'A' && drawboard[i, j] <= 'Z')
                             drawboard[i, j] = '█';
