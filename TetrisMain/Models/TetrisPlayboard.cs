@@ -404,8 +404,8 @@ namespace TetrisMain.Models {
         }
         public void RenderScore(string which) {
             if(which=="best") 
-                Program.GamePrinter.PrintScore(highScore, 4);
-            else Program.GamePrinter.PrintScore(score, 7);
+                Program.GamePrinter.PrintScore(highScore, 8);
+            else Program.GamePrinter.PrintScore(score, 11);
         }
         public void RenderLevel() {
             Program.GamePrinter.PrintLevel(level);
