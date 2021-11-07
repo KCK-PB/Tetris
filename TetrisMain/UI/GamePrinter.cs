@@ -18,7 +18,8 @@ namespace TetrisMain.UI {
         private char[,] drawboard;
         private int[] blockCount = { 0, 0, 0, 0, 0, 0, 0 };
         private Settings settings = Settings.GetSettings();
-        private Object printerBlocker = new Object();
+        public Object printerBlocker = new Object();
+        public bool upsideDown = false;
         public GamePrinter(char[,] _drawboard) {
             drawboard = _drawboard;
 
@@ -335,16 +336,17 @@ namespace TetrisMain.UI {
 
         }
 
-        public void PrintInExactPlace(char[,] drawboard, bool upsideDown = false) {
+        public void PrintInExactPlace(char[,] drawboard) {
             lock (printerBlocker) {
                 int startposition = 26;
                 if (upsideDown)
                     startposition = 7;
                 for (int i = 0; i < 20; i++) {
                     for (int j = 0; j < 10; j++) {
+                        int drawI = i;
                         if (upsideDown)
-                            i*=-1;
-                        Console.SetCursorPosition(j + 20, -i + startposition);
+                            drawI*=-1;
+                        Console.SetCursorPosition(j + 20, -drawI + startposition);
                         ConsoleColor tempColor = GetPieceColor(drawboard[i, j].ToString());
                         if (drawboard[i, j] >= 'A' && drawboard[i, j] <= 'Z')
                             drawboard[i, j] = '█';

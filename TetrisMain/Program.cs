@@ -355,8 +355,9 @@ namespace TetrisMain
 
         static void PrepareGame()
         {
+            Models.Settings settings = Models.Settings.GetSettings();
             JukeBox jukeBox = new JukeBox();
-            jukeBox.PlayMusic(Models.Settings.GetSettings().selectedGameMode);
+            jukeBox.PlayMusic(settings.selectedGameMode);
             bool showMenu = false;
             ConsoleKey keyPress;
             Console.Clear();
@@ -367,10 +368,15 @@ namespace TetrisMain
             playboard.RenderBlockCount();
             playboard.RenderScore("best");
             GamePrinter.PrintInExactPlace(playboard.drawboard);
+            GlitchTimer glitchTimer = new GlitchTimer();
+            if (settings.selectedGameMode == 3)
+                glitchTimer.EnableTimer();
             playboard.StartGame();
 
             while (showMenu == false)
             {
+                 if(!playboard.IsGameInProgress() && settings.selectedGameMode == 3)
+                    glitchTimer.DisableTimer();
                 keyPress = Console.ReadKey(true).Key;
                 if (playboard.IsGameInProgress())
                     switch (keyPress)
