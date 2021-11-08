@@ -343,7 +343,7 @@ namespace TetrisMain.UI {
             }
             //Console.BackgroundColor = ConsoleColor.DarkGray;
             for (int i = 0; i < 30; i++) {
-                for (int j = 0; j < 49; j++) {
+                for (int j = 0; j < 50; j++) {
                     Console.Write(this.Game[i][j]);
                 }
                 Console.Write(' ');

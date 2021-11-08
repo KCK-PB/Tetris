@@ -74,8 +74,8 @@ namespace TetrisMain {
             ConsoleHelper.SetCurrentFont("Terminal", 32);
             Console.CursorVisible = false;
             Console.SetWindowSize(1, 1);
-            Console.SetBufferSize(50, 30);
-            Console.SetWindowSize(50, 30);
+            Console.SetBufferSize(51, 31);
+            Console.SetWindowSize(51, 31);
             ConsoleHelper.LockSize();
             Console.Title = "TETRIS";
             JukeBox jukeBox = new JukeBox();
@@ -240,11 +240,11 @@ namespace TetrisMain {
                     if (title.Length == 10)
                         minus = 4;
                     if (option == selectedOption) {
-                        Console.SetCursorPosition(((Console.WindowWidth - title.Length + 1) / 2) - minus, 10 + i);
+                        Console.SetCursorPosition(((Console.WindowWidth - title.Length ) / 2) - minus, 10 + i);
                         Console.Write(">");
                     }
                     else {
-                        Console.SetCursorPosition(((Console.WindowWidth - title.Length + 1) / 2) - minus, 10 + i);
+                        Console.SetCursorPosition(((Console.WindowWidth - title.Length ) / 2) - minus, 10 + i);
                         Console.Write(" ");
                     }
 
@@ -416,8 +416,11 @@ namespace TetrisMain {
                     playboard.DrawBoard();
                     GamePrinter.PrintInExactPlace(playboard.drawboard);
                     if (keyPress == ConsoleKey.Enter) {
+                    if (settings.selectedGameMode == "Gravity Glitch")
+                            glitchTimer.DisableTimer();
                         Console.Clear();
                         scoreboard.AddToHighScoreFile(DateTime.Now, Environment.UserName, playboard.GetCurrentScore());
+                        jukeBox.StartMusic();
                         WriteBorder();
                         WriteMenu(options, options.First(), true);
                         showMenu = true;
@@ -432,32 +435,31 @@ namespace TetrisMain {
 
         static void WriteBorder() {
             Console.SetCursorPosition(0, 0);
-            Console.Write(@"
- ____ ____ ____ ____ ________ ____ ____ ____ ____ 
+            Console.Write(@" ____ ____ ____ ____ ________ ____ ____ ____ ____
 ||  |||  |||  |||  |||      |||  |||  |||  |||  ||
 ||__|||__|||__|||__|||______|||__|||__|||__|||__||
 |/__\|/__\|/__\|/__\|/______\|/__\|/__\|/__\|/__\|
- ____                                        ____ 
+ ____                                        ____
 ||  ||                                      ||  ||
 ||__||                                      ||__||
 |/__\|                                      |/__\|
- ____                                        ____ 
+ ____                                        ____
 ||  ||                                      ||  ||
 ||__||                                      ||__||
 |/__\|                                      |/__\|
- ____                                        ____ 
+ ____                                        ____
 ||  ||                                      ||  ||
 ||__||                                      ||__||
 |/__\|                                      |/__\|
- ____                                        ____ 
+ ____                                        ____
 ||  ||                                      ||  ||
 ||__||                                      ||__||
 |/__\|                                      |/__\|
- ____                                        ____ 
+ ____                                        ____
 ||  ||                                      ||  ||
 ||__||                                      ||__||
 |/__\|                                      |/__\|
- ____ ____ ____ ____ ________ ____ ____ ____ ____ 
+ ____ ____ ____ ____ ________ ____ ____ ____ ____
 ||  |||  |||  |||  |||      |||  |||  |||  |||  ||
 ||__|||__|||__|||__|||______|||__|||__|||__|||__||
 |/__\|/__\|/__\|/__\|/______\|/__\|/__\|/__\|/__\|
@@ -575,8 +577,7 @@ namespace TetrisMain {
 
         static void WriteLogo() {
             Console.Clear();
-            Console.Write(@"
- ____ ____ ____ ____ ________ ____ ____ ____ ____
+            Console.Write(@" ____ ____ ____ ____ ________ ____ ____ ____ ____
 ||  |||  |||  |||  |||      |||  |||  |||  |||  ||
 ||__|||__|||__|||__|||______|||__|||__|||__|||__||
 |/__\|/__\|/__\|/__\|/______\|/__\|/__\|/__\|/__\|
