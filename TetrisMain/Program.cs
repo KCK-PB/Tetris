@@ -300,8 +300,6 @@ namespace TetrisMain {
         }
 
         static void WriteScoreboard(List<string> scoreLines) {
-            if (scoreLines.Count == 0)
-                return;
             const string title = "Scoreboard:";
             const int maxCountOfLines = 12;
             int startIndex = 0;
@@ -310,22 +308,28 @@ namespace TetrisMain {
             JukeBox jukeBox = new JukeBox();
             CleanScreen();
             Console.SetCursorPosition(5, 7);
-            Console.SetCursorPosition(((Console.WindowWidth - title.Length) / 2) - 2, Console.CursorTop);
+            Console.SetCursorPosition(((Console.WindowWidth - title.Length+1) / 2) , Console.CursorTop);
             Console.WriteLine("Scoreboard:");
             int i = 0;
+            if (scoreLines.Count == 0) {
+                while (keyInfo.Key != ConsoleKey.Escape) 
+                    keyInfo = Console.ReadKey(true);
+            }
+                
             for (; i <= maxCountOfLines; index++) {
                 if (index >= scoreLines.Count)
                     break;
                 string currentLine = scoreLines[index];
                 Console.SetCursorPosition(5 + i, 9 + i);
-                Console.SetCursorPosition(((Console.WindowWidth - currentLine.Length) / 2) - 2, Console.CursorTop);
+                Console.SetCursorPosition(((Console.WindowWidth - currentLine.Length + 1) / 2) , Console.CursorTop);
                 Console.WriteLine(currentLine);
                 i++;
             }
             do {
                 if (scoreLines.Count < maxCountOfLines) {
                     Console.SetCursorPosition(5 + i, 7 + i);
-                    Console.ReadKey(true);
+                    while (keyInfo.Key != ConsoleKey.Escape) 
+                        keyInfo = Console.ReadKey(true);
                     break;
                 }
 
@@ -336,7 +340,7 @@ namespace TetrisMain {
                     string currentLine = scoreLines[index];
                     Console.MoveBufferArea(6, 10, 34, 12, 6, 9);
                     Console.SetCursorPosition(5 + i - 1, 9 + i - 1);
-                    Console.SetCursorPosition(((Console.WindowWidth - currentLine.Length) / 2) - 2, Console.CursorTop);
+                    Console.SetCursorPosition(((Console.WindowWidth - currentLine.Length + 1) / 2), Console.CursorTop);
                     Console.WriteLine(currentLine);
                     index++;
                     startIndex++;
@@ -346,7 +350,7 @@ namespace TetrisMain {
                     string currentLine = scoreLines[startIndex - 1];
                     Console.MoveBufferArea(6, 9, 34, 12, 6, 10);
                     Console.SetCursorPosition(5, 9);
-                    Console.SetCursorPosition(((Console.WindowWidth - currentLine.Length) / 2) - 2, Console.CursorTop);
+                    Console.SetCursorPosition(((Console.WindowWidth - currentLine.Length + 1) / 2), Console.CursorTop);
                     Console.WriteLine(currentLine);
                     startIndex--;
                     index--;
