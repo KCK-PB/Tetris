@@ -5,11 +5,13 @@ using System.Media;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading;
+using TetrisMain.Models;
 
 namespace TetrisMain.UI {
     class JukeBox {
         private SoundPlayer[] music = new SoundPlayer[6];
-        private string[] SFX = new string[14];
+        private string[] SFX = new string[15];
+        private Settings settings = Settings.GetSettings();
 
         [DllImport("winmm.dll")]
         private static extern long mciSendString(string Cmd, StringBuilder StrReturn, int ReturnLength, IntPtr HwndCallback);
@@ -23,7 +25,7 @@ namespace TetrisMain.UI {
             music[4].SoundLocation = "SFX/highscoretheme.wav";
             music[5].SoundLocation = "SFX/gameover.wav";
 
-            SFX[0] = "SFX/singleline.wav";//
+            SFX[0] = "SFX/menuforward.wav";//
             SFX[1] = "SFX/singleline.wav";//
             SFX[2] = "SFX/doubleline.wav";//
             SFX[3] = "SFX/tripleline.wav";//
@@ -37,18 +39,29 @@ namespace TetrisMain.UI {
             SFX[11] = "SFX/glitch2.wav";
             SFX[12] = "SFX/glitch3.wav";
             SFX[13] = "SFX/glitch4.wav";
+            SFX[14] = "SFX/menuback.wav";
             for (int i = 0; i < 6; i++)
                 music[i].Load();
         }
         public void PlaySound(int sound,long time) {
+            if (!settings.wantsSFX)
+                return;
             mciSendString("open \"" + SFX[sound] + "\" type waveaudio alias " + time.ToString(), null, 0, IntPtr.Zero) ;
             mciSendString("play "+time.ToString(), null, 0, IntPtr.Zero);
         }
         public void PlayMusic(int music) {
-            this.music[music].PlayLooping();
+            if (settings.wantsMusic)
+                this.music[music].PlayLooping();
         }
         public void PlayMusicOnce(int music) {
-            this.music[music].Play();
+            if(settings.wantsMusic)
+                this.music[music].Play();
+        }
+        public void StopMusic() {
+            music[0].Stop();
+        }
+        public void StartMusic() {
+            music[0].PlayLooping();
         }
     }
 }

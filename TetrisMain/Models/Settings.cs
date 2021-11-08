@@ -10,7 +10,7 @@ namespace TetrisMain.Models {
         private readonly string SettingFile;
 
         public bool wantsGhostPiece { get; set; }
-        public int selectedGameMode { get; set; }
+        public string selectedGameMode { get; set; }
         public bool wantsMusic { get; set; }
         public bool wantsSFX { get; set; }
         public bool wantsAlternativeColorPallete { get; set; }
@@ -20,7 +20,7 @@ namespace TetrisMain.Models {
         private Settings() {
             //TO-DO load settings from file
             wantsGhostPiece = true;
-            selectedGameMode = 1;
+            selectedGameMode = "Classic";
             wantsMusic = true;
             wantsSFX = true;
             wantsGrid = ' ';

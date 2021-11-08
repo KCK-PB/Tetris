@@ -172,7 +172,7 @@ namespace TetrisMain.Models {
             while (clearedLines > linesPerLevel[level])
                 LevelUp();
             blockRushCounter += tempClearedLines;
-            if (blockRushCounter >= 5 && settings.selectedGameMode==2) {
+            if (blockRushCounter >= 5 && settings.selectedGameMode=="Block Rush") {
                 blockRushCounter -= 5;
                 GenerateAndPlaceRandomBlock();
             }

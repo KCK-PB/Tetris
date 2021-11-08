@@ -374,23 +374,23 @@ namespace TetrisMain.UI {
                 PrintMode(settings.selectedGameMode);
             }
         }
-        public void PrintMode(int mode)
+        public void PrintMode(string mode)
         {
             lock (printerBlocker)
             {
-                if(mode == 1)
+                if(mode == "Classic")
                 {
                     Console.SetCursorPosition(36, 3);
                     WriteInColor(ConsoleColor.Gray, "CLASSIC");
                 }
-                if (mode == 2)
+                if (mode == "Block Rush")
                 {
                     Console.SetCursorPosition(36, 3);
                     WriteInColor(ConsoleColor.Gray, "BLOCK");
                     Console.SetCursorPosition(36, 4);
                     WriteInColor(ConsoleColor.Gray, "RUSH");
                 }
-                if (mode == 3)
+                if (mode == "Gravity Glitch")
                 {
                     Console.SetCursorPosition(36, 3);
                     WriteInColor(ConsoleColor.Gray, "GRAVITY");
@@ -477,7 +477,27 @@ namespace TetrisMain.UI {
                 }
             }
         }
+        private ConsoleColor AlternateColor(ConsoleColor color) {
+            if (color == ConsoleColor.DarkMagenta)
+                return ConsoleColor.DarkBlue;
+            if (color == ConsoleColor.Blue)
+                return ConsoleColor.DarkCyan;
+            if (color == ConsoleColor.Red)
+                return ConsoleColor.Magenta;
+            if (color == ConsoleColor.Yellow)
+                return ConsoleColor.DarkGreen;
+            if (color == ConsoleColor.Green)
+                return ConsoleColor.DarkYellow;
+            if (color == ConsoleColor.DarkRed)
+                return ConsoleColor.Blue;
+            if (color == ConsoleColor.Cyan)
+                return ConsoleColor.DarkRed;
+            return ConsoleColor.Gray;
+
+        }
         private void WriteInColor(ConsoleColor color, string message) {
+            if (settings.wantsAlternativeColorPallete)
+                color = AlternateColor(color);
             Console.ForegroundColor = color;
             Console.Write(message);
             Console.ForegroundColor = ConsoleColor.Gray;
@@ -535,15 +555,6 @@ namespace TetrisMain.UI {
         private void PrintColoredStatistic() {
 
             ConsoleColor[] tempColors = { ConsoleColor.DarkMagenta, ConsoleColor.Blue, ConsoleColor.Red, ConsoleColor.Yellow, ConsoleColor.Green, ConsoleColor.DarkRed, ConsoleColor.Cyan };
-            if (settings.wantsAlternativeColorPallete) {
-                tempColors[0] = ConsoleColor.Blue;
-                tempColors[1] = ConsoleColor.Blue;
-                tempColors[2] = ConsoleColor.Blue;
-                tempColors[3] = ConsoleColor.Blue;
-                tempColors[4] = ConsoleColor.Blue;
-                tempColors[5] = ConsoleColor.Blue;
-                tempColors[6] = ConsoleColor.Blue;
-            }
             Console.SetCursorPosition(5,8);
             WriteInColor(tempColors[0], "███");
             Console.SetCursorPosition(5,9);
